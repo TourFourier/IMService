@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMClient", "IMClient\IMClie
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMServer", "IMServer\IMServer.vcxproj", "{F388DBDE-6A82-4B9C-B926-1E143E8C54DE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMClient2", "IMClient2\IMClient2.vcxproj", "{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{F388DBDE-6A82-4B9C-B926-1E143E8C54DE}.Release|x64.Build.0 = Release|x64
 		{F388DBDE-6A82-4B9C-B926-1E143E8C54DE}.Release|x86.ActiveCfg = Release|Win32
 		{F388DBDE-6A82-4B9C-B926-1E143E8C54DE}.Release|x86.Build.0 = Release|Win32
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Debug|x64.ActiveCfg = Debug|x64
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Debug|x64.Build.0 = Debug|x64
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Debug|x86.ActiveCfg = Debug|Win32
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Debug|x86.Build.0 = Debug|Win32
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Release|x64.ActiveCfg = Release|x64
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Release|x64.Build.0 = Release|x64
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Release|x86.ActiveCfg = Release|Win32
+		{998A99FF-7009-4B75-8FAA-1B9F2B17A99E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ccommunication_tcp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CMefathimSocket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -31,9 +28,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="csafemessagequeue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="icommunication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IMessage.h">
@@ -47,16 +41,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CCommunication_TCP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CMefathimSocket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CSafeMessageQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ICommunication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IMessage.cpp">

@@ -6,24 +6,26 @@
 #define DLL __declspec(dllexport)
 #endif
 
+#include <list>
+
 class CMefathimSocket : public CAsyncSocket
 {
 	// For server side usage only:
-	CString m_sSocketName;
 	std::list<CMefathimSocket*> m_listSocketsToClient;
+	std::string m_sSocketName;
 protected:
-	std::map<int, void*> m_hashCallbacks; // TODO: Change value to vector of function pointers
+	std::map<int, void*> m_hashCallbacks; // TODO: Change value to vector/list of function pointers
 	IMessageFactory* m_pMessageFactory;
 public:
-	CMefathimSocket(IMessageFactory* pMessageFactory, CString sSocketName);
+	CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName);
 	~CMefathimSocket();
+
+	void RegisterCallback(int eMessageType, void(*pfnCallback)(IMessage*));
+	void RemoveCallback(int eMessageType);
+	void OnMessageReceived(char* pBuffer);
 
 	virtual void OnConnect(int nErrorCode);
 	virtual void OnAccept(int nErrorCode);
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
-
-	void RegisterCallback(int eMessageType, void(*pfnCallback)(IMessage*));
-
-	void RemoveCallback(int eMessageType);
 };

@@ -18,10 +18,10 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp/*, L"Client"*/)     //[2]***************************************************************************************
+CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp/*, L"Client2"*/)     //[2]***************************************************************************************
 {
 	Register();
-	//m_socket->Connect(need address...sConnectionDetails);
+	//this->Connect(//sock address);
 }
 
 CCommunication_Client::~CCommunication_Client()
@@ -39,7 +39,7 @@ void CCommunication_Client::OnGroupCreateUpdateReceived(IMessage* pMessage)
 	CCommunication_Client::GetInstance()->m_queueGroupCreateUpdateMessages.Push((MGroupCreateUpdate*)pMessage);
 }
 
-void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
+void CCommunication_Client::OnAcknowledgeReceived(IMessage* pMessage)
 {
 	CCommunication_Client::GetInstance()->m_queueAcknowledge.Push((MAcknowledgeMessage*)pMessage);
 }
@@ -53,12 +53,12 @@ void CCommunication_Client::Register()
 }
 
 // IMPLEMENTATION INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
-void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
+void CCommunication_Client::SendTextMessage(const TTextMessage& text)
 {
-	MTextMessage* pMTextmessage = new MTextMessage(1,text);
+	MTextMessage* pMTextmessage = new MTextMessage(1, text);
 	char* cBuffer = new char[pMTextmessage->Size()];
 	pMTextmessage->ToBuffer(cBuffer);
-	m_socket->Send(cBuffer, sizeof(cBuffer));
+	this->Send(cBuffer, sizeof(cBuffer));
 };
 void CCommunication_Client::SendGroupCreateUpdate(const TGroup& group) {};
 void CCommunication_Client::SendAck(const TTextMessage& textMessageToAck) {};

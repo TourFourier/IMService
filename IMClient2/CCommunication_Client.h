@@ -2,11 +2,41 @@
 
 
 class CCommunication_Client :
-	public  CMefathimSocket
+	public CMefathimSocket
 {
+
+	//protected:
+
+		//CHashTable<EMessageType, CList<void*>> m_hashCallbacks;
+
+		//IMessageFactory* m_pMessageFactory;
+
+	//public:
+
+
+		/*void RegisterCallback(EMessageType eMessageType, void* pfnCallback)
+		{
+			m_hashCallbacks.Insert(eMessageType, pfnCallback);
+		}*/
+
+		/*void RemoveCallback(EMessageType eMessageType, void* pfnCallback)
+		{
+			m_hashCallbacks.Remove(eMessageType, pfnCallback);
+		}*/
+
+
+		//Constructor
+		/*ICommunication(IMessageFactory* pMessageFactory)
+		{
+			m_pMessageFactory = pMessageFactory;
+		}
+	};*/
+
 
 private:
 	static CCommunication_Client* s_pCCommunicationClient; // SINGLETON; 
+
+	//Constructor; constructor of CCommunication_Client calls constructor of 'abba' ie. CCommunication_TCP, and passes in as an argument to the abba constructor a CMessageFactory_WhatsApp object
 
 	// Creating queues of objects (text message, acknowledge and group) for INCOMING messages
 	CSafeMessageQueue m_queueTextMessages;
@@ -15,7 +45,7 @@ private:
 
 public:
 	CCommunication_Client(/*CString sConnectionDetails*/);
-	// This method fills a hash tablewith message type and corresponding callback function    
+	// This method fills a hash table(declared in  'IComm', the sabba)with message type and corresponding callback function    [5]*****************************************************************
 	void Register();
 
 
@@ -36,7 +66,7 @@ public:
 
 	// Getters for the queues 
 	const CSafeMessageQueue& GetTextMessagesQueue() { return m_queueTextMessages; }
-    const CSafeMessageQueue& GetGroupCreateUpdateMessagesQueue() { return m_queueGroupCreateUpdateMessages; }
+	const CSafeMessageQueue& GetGroupCreateUpdateMessagesQueue() { return m_queueGroupCreateUpdateMessages; }
 	const CSafeMessageQueue& GetAcknowledgeMessagesQueue() { return m_queueAcknowledge; }
 
 	// methods for OUTGOING messages; must IMPLEMENT
