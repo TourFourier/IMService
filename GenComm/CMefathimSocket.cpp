@@ -1,17 +1,35 @@
 #include "stdafx.h"
+#include <afxsock.h>
+#include "IMessageFactory.h"
+#include "IMessage.h"
 #include "CMefathimSocket.h"
+#include <atlstr.h>
+#include <map>
 #include <list>
 
 static const int BUFFER_LENGTH = 100;
 
-CMefathimSocket::CMefathimSocket(CString sSocketName) :CAsyncSocket()
+CMefathimSocket::CMefathimSocket(IMessageFactory* pMessageFactory, CString sSocketName) :CAsyncSocket()
 {
+	m_pMessageFactory = pMessageFactory;
 	m_sSocketName = sSocketName;
 }
 
 
 CMefathimSocket::~CMefathimSocket()
 {
+}
+
+
+void CMefathimSocket::RegisterCallback(int eMessageType, void(*pfnCallback)(IMessage*))
+{
+	m_hashCallbacks.insert(std::pair<int, void*>(eMessageType, pfnCallback));
+	//m_hashCallbacks[eMessageType] = pfnCallback;
+}
+
+void CMefathimSocket::RemoveCallback(int eMessageType)
+{
+	m_hashCallbacks.erase(eMessageType);
 }
 
 

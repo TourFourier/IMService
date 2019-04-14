@@ -20,7 +20,7 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CCommunication_TCP(new CMessageFactory_WhatsApp, _T("This is a test"))     //[2]***************************************************************************************
+CCommunication_Client::CCommunication_Client() : CCommunication_TCP(new CMessageFactory_WhatsApp, L"Client")     //[2]***************************************************************************************
 {
 	Register();
 	m_socket->Connect(need address...sConnectionDetails);
@@ -54,7 +54,7 @@ void CCommunication_Client::Register()
 	this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
 }
 
-// IMPLEMENTATION WILL INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
+// IMPLEMENTATION INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
 void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
 {
 	MTextMessage* pMTextmessage = new MTextMessage(1,text);

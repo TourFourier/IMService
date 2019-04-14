@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 #include "IMClient.h"
 #include "MainFrm.h"
-
+#include "../GenComm/CMefathimsocket.h"
 #include "IMClientDoc.h"
 #include "IMClientView.h"
 
@@ -140,6 +140,18 @@ BOOL CIMClientApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+
+	// Inist socket client:
+	BOOL bAfxSocketInitiated = ::AfxSocketInit();
+	if (bAfxSocketInitiated == TRUE)
+	{
+		CMefathimSocket* psocketClient = new CMefathimSocket(L"Client");
+		BOOL bCreated = psocketClient->Create();
+		if (bCreated)
+		{
+			BOOL bConncted = psocketClient->Connect(L"127.0.0.1", 100);
+		}
+	}
 	return TRUE;
 }
 
