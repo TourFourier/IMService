@@ -2,6 +2,7 @@
 #include <afxsock.h>
 #include "IMessageFactory.h"
 #include "IMessage.h"
+#include "constants.h"
 #include <atlstr.h>
 #include <map>
 #include <list>
@@ -9,7 +10,6 @@
 #include "CMefathimSocket.h"
 
 static const int BUFFER_LENGTH = 100;
-static int CLIENT_NUMBER = 1;
 
 CMefathimSocket::CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName) :CAsyncSocket()
 {
@@ -39,8 +39,7 @@ void CMefathimSocket::RemoveCallback(int eMessageType)
 void CMefathimSocket::OnAccept(int nErrorCode)
 {
 	// Create new socket for the connection to this client:
-	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + std::to_string(CLIENT_NUMBER));
-	CLIENT_NUMBER++;
+	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + std::to_string(++CLIENT_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
 

@@ -413,5 +413,6 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
 
+
 	CFrameWndEx::OnTimer(nIDEvent);
 }

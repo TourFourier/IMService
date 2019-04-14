@@ -58,7 +58,7 @@ void CCommunication_Client::SendTextMessage(const TTextMessage& text)
 	MTextMessage* pMTextmessage = new MTextMessage(1,text);
 	char* cBuffer = new char[pMTextmessage->Size()];
 	pMTextmessage->ToBuffer(cBuffer);
-	m_socket->Send(cBuffer, sizeof(cBuffer));
+	this->Send(cBuffer, sizeof(cBuffer));
 };
 void CCommunication_Client::SendGroupCreateUpdate(const TGroup& group) {};
 void CCommunication_Client::SendAck(const TTextMessage& textMessageToAck) {};
