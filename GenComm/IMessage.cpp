@@ -3,8 +3,6 @@
 #include "IMessage.h"
 //#include <rpc.h>
 
-static const int SIZE_GUID = sizeof(int);
-static const int SIZE_INT = sizeof(int);
 
 IMessage::IMessage()
 {

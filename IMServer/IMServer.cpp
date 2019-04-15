@@ -5,9 +5,12 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+#include <string>
+#include "../GenComm/constants.h"
+#include "../GenComm/CMefathimsocket.h"
+#include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "IMServer.h"
 #include "MainFrm.h"
-
 #include "IMServerDoc.h"
 #include "IMServerView.h"
 
@@ -140,6 +143,22 @@ BOOL CIMServerApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+
+	// Add this code to your IniInstance() function in your MFC application:
+
+	// Init socket server:
+	BOOL bInitiated = ::AfxSocketInit();
+	if (bInitiated)
+	{
+		CMefathimSocket* pSocket = new CMefathimSocket(new CMessageFactory_WhatsApp, "Server");
+		//CAsyncSocket socket;
+		BOOL bCreated = pSocket->Create(100);
+		if (bCreated)
+		{
+			BOOL bListening = pSocket->Listen();
+		}
+	}
+
 	return TRUE;
 }
 

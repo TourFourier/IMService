@@ -1,5 +1,7 @@
 #pragma once
-
+#include <map>
+#include "IMessageFactory.h"
+#include "IMessage.h"
 #ifdef DLL_IMPORT
 #define DLL __declspec(dllimport)
 #else

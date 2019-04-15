@@ -6,7 +6,9 @@
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 #include <string>
+#include <afxsock.h>
 #include "../GenComm/constants.h"
+#include "CCommunication_Client.h"
 #include "IMClient.h"
 #include "MainFrm.h"
 #include "../GenComm/CMefathimsocket.h"
@@ -148,12 +150,18 @@ BOOL CIMClientApp::InitInstance()
 	BOOL bAfxSocketInitiated = ::AfxSocketInit();
 	if (bAfxSocketInitiated == TRUE)
 	{
-		CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp,"Client" + std::to_string(++CLIENT_NUMBER));
-		BOOL bCreated = psocketClient->Create();
+		CCommunication_Client*  p_CC = CCommunication_Client::GetInstance();
+		BOOL bCreated = p_CC->Create();
 		if (bCreated)
 		{
-			BOOL bConncted = psocketClient->Connect(L"127.0.0.1", 100);
+			BOOL bConncted = p_CC->Connect(L"127.0.0.1", 100);
 		}
+		//CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++CLIENT_NUMBER));
+		//BOOL bCreated = psocketClient->Create();
+		//if (bCreated)
+		//{
+		//	BOOL bConncted = psocketClient->Connect(L"127.0.0.1", 100);
+		//}
 	}
 	return TRUE;
 }

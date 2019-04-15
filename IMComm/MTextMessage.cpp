@@ -1,5 +1,7 @@
 #include "stdafx.h"
 //#include <rpc.h>
+#include "../GenComm/constants.h"
+
 #include "structsAndConstants.h"
 #include "structsAndConstants.cpp"
 
@@ -28,9 +30,9 @@ int MTextMessage::Size()
 {
 	int size=0;
 
-	size += IMessage::SIZE_GUID;// 4; simple implementation uses int for GUID
-	size += IMessage::SIZE_INT;// 4
-	size += IMessage::SIZE_INT;// 4; this is the int that represents the size of the message
+	size += SIZE_GUID;// 4; simple implementation uses int for GUID
+	size += SIZE_INT;// 4
+	size += SIZE_INT;// 4; this is the int that represents the size of the message
 	size += sizeof(m_msgText);// Variant
 
 	return size;
@@ -40,9 +42,9 @@ bool MTextMessage::ToBuffer(char* cBuffer)
 {
 	
 	*(int*)cBuffer = m_guid;
-	*(int*)(cBuffer + IMessage::SIZE_GUID) = (int)EMessageType::TEXT_MESSAGE;
-	*(int*)(cBuffer + IMessage::SIZE_GUID + IMessage::SIZE_INT) = this->Size();
-	cBuffer = cBuffer + IMessage::SIZE_GUID + IMessage::SIZE_INT + IMessage::SIZE_INT;
+	*(int*)(cBuffer + ::SIZE_GUID) = (int)EMessageType::TEXT_MESSAGE;
+	*(int*)(cBuffer + ::SIZE_GUID + ::SIZE_INT) = this->Size();
+	cBuffer = cBuffer + ::SIZE_GUID + ::SIZE_INT + ::SIZE_INT;
 	this->m_msgText.ToBuffer(cBuffer);
 	//*(TTextMessage*)(cBuffer + IMessage::SIZE_GUID + IMessage::SIZE_INT + IMessage::SIZE_INT) = m_msgText;
 

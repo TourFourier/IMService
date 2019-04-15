@@ -5,9 +5,12 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+#include <string>
+#include "../GenComm/constants.h"
+#include "../GenComm/CMefathimsocket.h"
+#include "../IMComm/CMessageFactory_Whatsapp.h"
 #include "IMClient2.h"
 #include "MainFrm.h"
-#include "../GenComm/CMefathimSocket.h"
 #include "IMClient2Doc.h"
 #include "IMClient2View.h"
 
@@ -145,7 +148,7 @@ BOOL CIMClient2App::InitInstance()
 	BOOL bAfxSocketInitiated = ::AfxSocketInit();
 	if (bAfxSocketInitiated == TRUE)
 	{
-		CMefathimSocket* psocketClient = new CMefathimSocket(L"Client2");
+		CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++CLIENT_NUMBER));
 		BOOL bCreated = psocketClient->Create();
 		if (bCreated)
 		{

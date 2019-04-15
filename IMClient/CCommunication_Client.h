@@ -1,4 +1,7 @@
 #pragma once
+#include "../GenComm/CMefathimSocket.h"
+#include "../GenComm/CSafeMessageQueue.h"
+
 
 
 class CCommunication_Client :
