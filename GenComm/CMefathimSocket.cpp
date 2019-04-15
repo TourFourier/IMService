@@ -82,6 +82,9 @@ void CMefathimSocket::OnConnect(int nErrorCode)
 //the buffer that can be retrieved by calling the Receive() member function.
 void CMefathimSocket::OnReceive(int nErrorCode)
 {
+	CString Ca(this->m_sSocketName.c_str());
+	AfxMessageBox(Ca);
+
 	// Create a buffer to received the message:
 	const int RECEIVE_BUFFER_SIZE = 100;
 	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
@@ -93,11 +96,24 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	{
 		return;
 	}
+	
+	if (!(this->m_sSocketName.compare( "ServerSocket 1" )))
+	{
+		static int nMessageNumber = 51;
+		char carrSendBack[100];
+		sprintf_s(carrSendBack, "Test-message number... %d", nMessageNumber);
+		Send(carrSendBack, sizeof(carrSendBack));
+	}
+	else
+	{
+		::AfxMessageBox(L" not sending back anything yet");
 
-	::AfxMessageBox(L"about to call onMessageReceived");
+	}
+
+	//::AfxMessageBox(L"about to call onMessageReceived");
 
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	OnMessageReceived(arrBuffer);
+	//OnMessageReceived(arrBuffer);
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 		// Now send a message back:
