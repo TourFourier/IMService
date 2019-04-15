@@ -131,10 +131,6 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	}*/
 }
 
-void CMefathimSocket::OnClose(int nErrorCode)
-{
-	AfxMessageBox(L"Wow - connection closed...");
-}
 
 void CMefathimSocket::OnMessageReceived(char pBuffer[])
 {
@@ -212,3 +208,7 @@ int CMefathimSocket::SendTextMessage(/*std::string s*/const TTextMessage& text)
 };
 
 	
+void CMefathimSocket::OnClose(int nErrorCode)
+{
+	AfxMessageBox(L"Wow - connection closed...");
+}
