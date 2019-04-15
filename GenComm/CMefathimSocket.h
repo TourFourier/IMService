@@ -27,7 +27,7 @@ public:
 
 	void RegisterCallback(int eMessageType, void(*pfnCallback)(IMessage*));
 	void RemoveCallback(int eMessageType);
-	void OnMessageReceived(char* pBuffer);
+	void OnMessageReceived(char pBuffer[]);
 	int SendTextMessage(/*std::string s*/const TTextMessage& text);
 
 	virtual void OnConnect(int nErrorCode);

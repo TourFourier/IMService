@@ -42,7 +42,7 @@ void CMefathimSocket::OnAccept(int nErrorCode)
 {
 	::AfxMessageBox(L"received connection request");
 	// Create new socket for the connection to this client:
-	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
+	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + "Socket" + std::to_string(++SOCKET_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
 
 		CString Cp(pNewSocket->m_sSocketName.c_str());
@@ -120,7 +120,7 @@ void CMefathimSocket::OnClose(int nErrorCode)
 	AfxMessageBox(L"Wow - connection closed...");
 }
 
-void CMefathimSocket::OnMessageReceived(char* pBuffer)
+void CMefathimSocket::OnMessageReceived(char pBuffer[])
 {
 		AfxMessageBox(L"entered OnMessageReceived");
 		std::string a(pBuffer);
@@ -165,7 +165,7 @@ void CMefathimSocket::OnMessageReceived(char* pBuffer)
 
 		AfxMessageBox(L"exited callbacks ");
 
-		//>>>>>>>>> PROGRAM CRASHES HERE
+		//>>>>>>>>> PROGRAM CRASHES HERE...SERVER DOS NOT HAVE A MAP OF CALLBACKS YET
 	((void(*)(IMessage*))callbacks)(pMessage);
 	/*for (int i = 0; i < callbacks.GetSize(); i++)
 	{
