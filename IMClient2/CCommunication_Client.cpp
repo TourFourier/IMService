@@ -2,6 +2,8 @@
 #include "afxsock.h"
 #include <rpc.h>
 #include <atlstr.h>
+#include <string>
+#include "../GenComm/constants.h"
 #include "../GenComm/IMessageFactory.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "../GenComm/CMefathimSocket.h"
@@ -18,10 +20,9 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp/*, L"Client2"*/)     //[2]***************************************************************************************
+CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++SOCKET_NUMBER))
 {
 	Register();
-	//this->Connect(//sock address);
 }
 
 CCommunication_Client::~CCommunication_Client()

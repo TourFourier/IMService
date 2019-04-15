@@ -119,6 +119,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>"C:\Users\User\source\repos\TourFourier\IMService\x64\Debug\GenComm.lib";"C:\Users\User\source\repos\TourFourier\IMService\x64\Debug\IMComm.lib"</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

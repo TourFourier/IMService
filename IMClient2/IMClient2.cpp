@@ -148,7 +148,7 @@ BOOL CIMClient2App::InitInstance()
 	BOOL bAfxSocketInitiated = ::AfxSocketInit();
 	if (bAfxSocketInitiated == TRUE)
 	{
-		CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++CLIENT_NUMBER));
+		CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++SOCKET_NUMBER));
 		BOOL bCreated = psocketClient->Create();
 		if (bCreated)
 		{

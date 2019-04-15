@@ -7,8 +7,6 @@
 #include "../GenComm/IMessageFactory.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "../GenComm/CMefathimSocket.h"
-
-
 #include "../IMComm/structsAndConstants.h"
 #include "../GenComm/IMessage.h"
 #include "../IMComm/MTextMessage.h"
@@ -21,10 +19,9 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++CLIENT_NUMBER))     //[2]***************************************************************************************
+CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++SOCKET_NUMBER))   
 {
 	Register();
-	//m_socket->Connect(need address...sConnectionDetails);
 }
 
 CCommunication_Client::~CCommunication_Client()

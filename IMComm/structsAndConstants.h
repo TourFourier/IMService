@@ -143,9 +143,9 @@ struct TTextMessage
 
 enum EMessageType
 {
-	TEXT_MESSAGE = 0,
-	CREATE_UPDATE_GROUP = 1,
-	ACKNOWLEDGE = 2
+	TEXT_MESSAGE = 613,
+	CREATE_UPDATE_GROUP ,
+	ACKNOWLEDGE 
 };
 
 
