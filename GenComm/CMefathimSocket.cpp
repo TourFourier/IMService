@@ -9,9 +9,12 @@
 #include <map>
 #include <list>
 #include <string>
+#include <iostream>
 #include "CMefathimSocket.h"
 
 static const int BUFFER_LENGTH = 100;
+std::list <CMefathimSocket*> CMefathimSocket::m_listSocketsToClient;
+
 
 CMefathimSocket::CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName) :CAsyncSocket()
 {
@@ -40,50 +43,60 @@ void CMefathimSocket::RemoveCallback(int eMessageType)
 // This function is called when the server receives a connection request (V):
 void CMefathimSocket::OnAccept(int nErrorCode)
 {
-	::AfxMessageBox(L"received connection request");
+	//::AfxMessageBox(L"received connection request");
 	// Create new socket for the connection to this client:
 	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + "Socket" + std::to_string(++SOCKET_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
 
-		CString Cp(pNewSocket->m_sSocketName.c_str());
-		::AfxMessageBox(Cp);
+		//CString Cp(pNewSocket->m_sSocketName.c_str());
+		//::AfxMessageBox(Cp);
 
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
 
 	// Transform string to CString for use with AFXMessageBox
 	CString sName((pNewSocket->m_sSocketName).c_str());
-	::AfxMessageBox(_T("Accepted request and created socket ") +  sName );
+	//::AfxMessageBox(_T("Accepted request and created socket: ") +  sName );
 }
 
 // This function is called when the client is connected (V):
 void CMefathimSocket::OnConnect(int nErrorCode)
 {
 	CString sName(this->m_sSocketName.c_str());
-	::AfxMessageBox(L"OnConnect called by !!!!" + sName);
-
+	//::AfxMessageBox(L"OnConnect called by !!!!" + sName);
+	/*
 	TTextMessage text;
 	text.m_sText = _T("test text");
 	text.m_userDestination.guid = 17;
 	text.m_userDestination.sName =_T("dave");
 	text.m_userDestination.sPhoneNumber = _T(" 058 ");
-	text.m_groupDestination.guid = 12;
+	text.m_groupDestination.guid = 12;*/
+		//::AfxMessageBox(L"SendTextMessage going to be called by" + sName);
+	//int n_RetVal = SendTextMessage(/*"hello5"*/text);
 
-	int n_RetVal = SendTextMessage(/*"hello5"*/text);
-
-		// Printing returned value from call to sendtextmessage()
-		auto s = std::to_string(n_RetVal);
-		CString Cs(s.c_str());
-		::AfxMessageBox(Cs);
+		// Printing to message box returned int value from call to sendtextmessage(); need to convert to string and then to CString
+		//auto s = std::to_string(n_RetVal);
+		//CString Cs(s.c_str());
+		//::AfxMessageBox(Cs);
 
 		//int nRet = CAsyncSocket::Send(carrMessage, sizeof(carrMessage));
+	if (!(this->m_sSocketName.compare("Client1")))
+	{
+		::AfxMessageBox(L"about to send from " + sName + L"to Client 2");
+		static int nMessageNumber = 1;
+		char carrSendBack[100];
+		sprintf_s(carrSendBack, "Test-message  from client 1 to client 2  # %d", nMessageNumber);
+		this->Send(carrSendBack, sizeof(carrSendBack));
+	}
 }
 
 //Called by the framework to notify this socket that there is data in 
 //the buffer that can be retrieved by calling the Receive() member function.
 void CMefathimSocket::OnReceive(int nErrorCode)
 {
-	CString Ca(this->m_sSocketName.c_str());
-	AfxMessageBox(Ca);
+		//CString Ca(this->m_sSocketName.c_str());
+		//AfxMessageBox(Ca);
+
+		//::AfxMessageBox(L"text message received by " + Ca);
 
 	// Create a buffer to received the message:
 	const int RECEIVE_BUFFER_SIZE = 100;
@@ -96,19 +109,51 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	{
 		return;
 	}
-	
-	if (!(this->m_sSocketName.compare( "ServerSocket 1" )))
+
+	//need to access the list in the ServerSocket which holds sockets 1 and 2 ; using this give me ServerSocket1 whos list is empty
+	if (!(this->m_sSocketName.compare( "ServerSocket1" )))
 	{
-		static int nMessageNumber = 51;
-		char carrSendBack[100];
-		sprintf_s(carrSendBack, "Test-message number... %d", nMessageNumber);
-		Send(carrSendBack, sizeof(carrSendBack));
+		//create new buffer to hold old message with additional text
+		char carrReceived[BUFFER_LENGTH];
+		sprintf_s(carrReceived, BUFFER_LENGTH, "%s %s", (this->m_sSocketName) + " Received message to send to client2: ", arrBuffer);
+		::MessageBoxA(AfxGetMainWnd()->m_hWnd, carrReceived, "OnReceive()", 0);
+			//::AfxMessageBox(L"entered ss1 if");
+		 CMefathimSocket* t = *(++(CMefathimSocket::m_listSocketsToClient.begin()));
+			
+		 
+			//std::string s = t->m_sSocketName;
+			//std::list<CMefathimSocket*>::iterator it
+			//int t = this->m_listSocketsToClient.size();
+			//auto s = std::to_string(t);
+			//CString Cs(s.c_str());
+			//::AfxMessageBox(Cs + L"# of elements in this list");
+		
+			std::string s = t->m_sSocketName;
+			CString Cs(s.c_str());
+			//CString a = L"accessed list element";
+			//::AfxMessageBox(Cs );
+			//t = t + 1;
+			::AfxMessageBox(L"about to send from " + Cs + L" to Client2");
+		//static int nMessageNumber = 1;
+		//char carrSendBack[100];
+		//sprintf_s(carrSendBack, "Test-message  from client 1 to client 2  # %d", nMessageNumber);
+		t->Send(arrBuffer, sizeof(arrBuffer));
 	}
-	else
+	if (!(this->m_sSocketName.compare("Client2")))
+	{
+		::AfxMessageBox(L"entered cl2 if");
+
+		//  plot buffer
+		arrBuffer[nNumBytesReceived - 1] = 0;
+		char carrReceived[BUFFER_LENGTH];
+		sprintf_s(carrReceived, BUFFER_LENGTH, "%s %s", /*(this->m_sSocketName) +*/"Received message: ", arrBuffer);
+		::MessageBoxA(AfxGetMainWnd()->m_hWnd, carrReceived, "OnReceive()", 0);
+	}
+	/*else
 	{
 		::AfxMessageBox(L" not sending back anything yet");
 
-	}
+	}*/
 
 	//::AfxMessageBox(L"about to call onMessageReceived");
 
@@ -195,10 +240,10 @@ int CMefathimSocket::SendTextMessage(/*std::string s*/const TTextMessage& text)
 		//Create a message object to fill and call its ToBuffer() method
 		MTextMessage* pMTextmessage = new MTextMessage(33, text);
 		
-			AfxMessageBox(pMTextmessage->GetTextMessage().m_sText);
-			AfxMessageBox(pMTextmessage->GetTextMessage().m_userDestination.sName);
-
+			//AfxMessageBox(pMTextmessage->GetTextMessage().m_sText);
+			//AfxMessageBox(pMTextmessage->GetTextMessage().m_userDestination.sName);
 			//strcpy_s(cBuffer, s.c_str());
+
 	    // Filling the Buffer with the message objects details
 		pMTextmessage->ToBuffer(cBuffer);
 		//Sending the Buffer to server

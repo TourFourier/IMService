@@ -14,14 +14,14 @@
 
 class CMefathimSocket : public CAsyncSocket
 {
-	// For server side usage only:
-	std::list<CMefathimSocket*> m_listSocketsToClient;
 	std::string m_sSocketName;
 	//int m_SocketNumber;
 protected:
 	std::map<int, void*> m_hashCallbacks; // TODO: Change value to vector/list of function pointers
 	IMessageFactory* m_pMessageFactory;
 public:
+	// For server side usage only:
+	static std::list<CMefathimSocket*> m_listSocketsToClient;//Needed to implement in .h file
 	CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName);
 	~CMefathimSocket();
 
