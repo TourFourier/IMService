@@ -187,6 +187,7 @@
   <ItemGroup>
     <ClInclude Include="CCommunication_Server.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="CTextMessageManager.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="IMServer.h" />
     <ClInclude Include="IMServerDoc.h" />
@@ -202,6 +203,7 @@
   <ItemGroup>
     <ClCompile Include="CCommunication_Server.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CTextMessageManager.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="IMServer.cpp" />
     <ClCompile Include="IMServerDoc.cpp" />

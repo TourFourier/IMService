@@ -10,9 +10,10 @@
 #include "../IMComm/MTextMessage.h"
 #include "../IMComm/MGroupCreateUpdate.h"
 #include "../IMComm/MAcknowledgeMessage.h"
+#include "CTextMessageManager.h"
 #include "CCommunication_Server.h"
 
- CCommunication_Server* CCommunication_Server::s_pCommunicaionServer = NULL; 
+ CCommunication_Server* CCommunication_Server::s_pCommunicationServer = NULL; 
 
 CCommunication_Server::CCommunication_Server() : CMefathimSocket(new CMessageFactory_WhatsApp, "Server")
 {
@@ -25,7 +26,7 @@ CCommunication_Server::~CCommunication_Server()
 	this->Close();
 }
 
-void CCommunication_Server::OnTextMessageReceived(MTextMessage message)
+void CCommunication_Server::OnTextMessageReceived(TTextMessage message)
 {
 	CTextMessageManager::GetInstance()->PublishTextMessage(message);
 }
@@ -41,7 +42,7 @@ void CCommunication_Server::OnACKNOWLEDGEReceived(MAcknowledgeMessage message)
 
 void CCommunication_Server::Register()
 {
-	RegisterCallback(EMessageType::TEXT_MESSAGE, OnTextMessageReceived);
+	//<<<<<<<<<RegisterCallback(EMessageType::TEXT_MESSAGE, CCommunication_Server::GetInstance()->OnTextMessageReceived);>>>>>>>>>>>>>
 	//this->RegisterCallback(EMessageType::CREATE_UPDATE_GROUP, OnGroupCreateUpdateReceived);
 	//this->RegisterCallback(EMessageType::ACKNOWLEDGE, OnAcknowledgeReceived);
 }

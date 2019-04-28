@@ -6,15 +6,13 @@
 {
 private:
 	CCommunication_Server();
-	static CCommunication_Server* s_pCommunicaionServer; //SINGLETON
+	static CCommunication_Server* s_pCommunicationServer; //SINGLETON
 
 public:
 	~CCommunication_Server();
 
-	void OnTextMessageReceived(MTextMessage message)
-	{
-		CTextMessageManager::GetInstance()->PublishTextMessage(message);
-	}
+	void OnTextMessageReceived(TTextMessage message);
+	
 
 	/*void OnGroupCreateUpdateReceived(MGroupCreateUpdate message);
 	{
@@ -29,11 +27,11 @@ public:
 
 	static CCommunication_Server* GetInstance()
 	{
-		if (s_pCommunicaionServer == NULL)
+		if (s_pCommunicationServer == NULL)
 		{
-			s_pCommunicaionServer = new CCommunication_Server();
+			s_pCommunicationServer = new CCommunication_Server();
 		}
-		return s_pCommunicaionServer;
+		return s_pCommunicationServer;
 	}
 
 

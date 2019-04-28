@@ -54,6 +54,9 @@
     <ClInclude Include="CCommunication_Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTextMessageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IMServer.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CCommunication_Server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTextMessageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

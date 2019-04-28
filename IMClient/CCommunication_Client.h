@@ -16,8 +16,8 @@ private:
 	CSafeMessageQueue m_queueGroupCreateUpdateMessages;
 	CSafeMessageQueue m_queueAcknowledge;
 
-public:
 	CCommunication_Client(/*CString sConnectionDetails*/);
+public:
 	// This method fills a hash tablewith message type and corresponding callback function    
 	void Register();
 
@@ -43,7 +43,9 @@ public:
 	 CSafeMessageQueue& GetAcknowledgeMessagesQueue() { return m_queueAcknowledge; }
 
 	// methods for OUTGOING messages; must IMPLEMENT
-	void SendTextMessage(const TTextMessage& text); // argument: struct (3) // IMPLEMENTATION WILL INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
+
+	//void SendTextMessage(const TTextMessage& text); // argument: struct (3) // IMPLEMENTATION WILL INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
+	void SendTextMessage(const TTextMessage& text);
 	void SendGroupCreateUpdate(const TGroup& group); // argument: struct (2)
 	void SendAck(const TTextMessage& textMessageToAck); // argument: struct (3)
 

@@ -50,7 +50,7 @@ void CMefathimSocket::OnAccept(int nErrorCode)
 	// Accept client request by binding new socket to the clients ip and port
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
 
-	// Error handling
+	// Error handling; return value is non zero if the function was succesful
 	if (bAccepted)
 	{
 		return;
@@ -66,7 +66,72 @@ void CMefathimSocket::OnConnect(int nErrorCode)
 {
 		CString sName(this->m_sSocketName.c_str());
 		::AfxMessageBox(sName + L" is connected to the server" );
-		/*
+		
+}
+
+//Called by the framework to notify this socket that there is data in 
+//the buffer that can be retrieved by calling the Receive() member function.
+void CMefathimSocket::OnReceive(int nErrorCode)
+{
+		//CString Ca(this->m_sSocketName.c_str());
+		//AfxMessageBox(Ca);
+		//::AfxMessageBox(L"text message received by " + Ca);
+
+	// Create a buffer to received the message:
+	const int RECEIVE_BUFFER_SIZE = 100;
+	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
+	// Receive the message:
+	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
+	// - If error code returned, do not continue:
+	if (nNumBytesReceived == SOCKET_ERROR || nNumBytesReceived == 0)
+	{
+		return;
+	}
+
+	// If recipient is a client: call onMessageReceived() to get the message object and call its callback
+	if (this->m_sSocketName.compare("Client"))
+	{
+		OnMessageReceived(arrBuffer);
+	}
+	else
+	{
+		// Server receives buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
+		for (auto it : CMefathimSocket::m_listSocketsToClient)
+		{
+			if ((it->m_sSocketName.compare(this->m_sSocketName)))
+			{
+				it->Send(arrBuffer, sizeof(arrBuffer));
+			}
+		}
+	}	
+}
+
+
+void CMefathimSocket::OnMessageReceived(char pBuffer[])
+{
+	// 0. Get message type from buffer (notice that in all messsages, first two
+	//    members are the GUID and then type (see IMessage class) ie. this will move pointer over to point at type variable in buffer array. 
+	//This explains the folowing line:
+	int type = *(int*)(pBuffer + sizeof(int));//move pointer over till reach type;cast to pointer to enum;get content of pointer
+	// 1. Create Message object by the type.
+	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
+	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
+	// 2. Call callback
+	void* callbacks = m_hashCallbacks[type]; // 'callbacks' : specif
+	((void(*)(IMessage*))callbacks)(pMessage);
+}
+	
+
+
+	
+void CMefathimSocket::OnClose(int nErrorCode)
+{
+	AfxMessageBox(L"Wow - connection closed...");
+}
+
+
+
+/*
 		TTextMessage text;
 		text.m_sText = _T("test text");
 		text.m_userDestination.guid = 17;
@@ -90,50 +155,10 @@ void CMefathimSocket::OnConnect(int nErrorCode)
 			sprintf_s(carrSendBack, "Test-message  from client 1 to client 2  # %d", nMessageNumber);
 			this->Send(carrSendBack, sizeof(carrSendBack));
 		}*/
-}
-
-//Called by the framework to notify this socket that there is data in 
-//the buffer that can be retrieved by calling the Receive() member function.
-void CMefathimSocket::OnReceive(int nErrorCode)
-{
-		//CString Ca(this->m_sSocketName.c_str());
-		//AfxMessageBox(Ca);
-		//::AfxMessageBox(L"text message received by " + Ca);
-
-	// Create a buffer to received the message:
-	const int RECEIVE_BUFFER_SIZE = 100;
-	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
-	// Receive the message:
-	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
-	// - If error code returned, do not continue:
-	if (nNumBytesReceived == SOCKET_ERROR || nNumBytesReceived == 0)
-	{
-		return;
-	}
-
-	if (this->m_sSocketName.compare("Client"))
-	{
-		//TODO: fill in client logic.....
-		OnMessageReceived(arrBuffer);
-	}
-	else
-	{
-		// Server receives buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
-		for (auto it : CMefathimSocket::m_listSocketsToClient)
-		{
-			if ((it->m_sSocketName.compare(this->m_sSocketName)))
-			{
-				//it->Send(arrBuffer, sizeof(arrBuffer));
-				it->OnMessageReceived(arrBuffer);
-			}
-		}
-	}
 
 
-
-
-
-	//need to access the list in the ServerSocket which holds sockets 1 and 2 ; using this gives me ServerSocket1 whos list is empty
+/*TAKEN OUT OF onReceived()*/
+/*//need to access the list in the ServerSocket which holds sockets 1 and 2 ; using this gives me ServerSocket1 whos list is empty
 	if (!(this->m_sSocketName.compare( "ServerSocket1" )))
 	{
 		//create new buffer to hold old message with additional text
@@ -169,50 +194,8 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 		//  plot buffer
 		arrBuffer[nNumBytesReceived - 1] = 0;
 		char carrReceived[BUFFER_LENGTH];
-		sprintf_s(carrReceived, BUFFER_LENGTH, "%s %s", /*(this->m_sSocketName) +*/"Received message: ", arrBuffer);
-		::MessageBoxA(AfxGetMainWnd()->m_hWnd, carrReceived, "OnReceive()", 0);
-	}
+		sprintf_s(carrReceived, BUFFER_LENGTH, "%s %s", /*(this->m_sSocketName) +*///"Received message: ", arrBuffer);
+		//::MessageBoxA(AfxGetMainWnd()->m_hWnd, carrReceived, "OnReceive()", 0);}
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	//OnMessageReceived(arrBuffer);
-	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-}
-
-
-void CMefathimSocket::OnMessageReceived(char pBuffer[])
-{
-	// 0. Get message type from buffer (notice that in all messsages, first two
-	//    members are the GUID and then type (see IMessage class) ie. this will move pointer over to point at type variable in buffer array. 
-	//This explains the folowing line:
-	int type = *(int*)(pBuffer + sizeof(int));//move pointer over till reach type;cast to pointer to enum;get content of pointer
-	// 1. Create Message object by the type.
-	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
-	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
-	// 2. Call callback
-	void* callbacks = m_hashCallbacks[type]; // 'callbacks' : specific callback func
-	((void(*)(IMessage*))callbacks)(pMessage);
-	/*for (int i = 0; i < callbacks.GetSize(); i++)
-	{
-		void* pfnCallback = callbacks[i];
-		(*pfnCallback)(pMessage);// Calling the callback func and passing in message obj. as an argument; the callbacks simply push the message into a queue to be handled by main thread
-	}*/
-}
-	
-int CMefathimSocket::SendTextMessage(/*std::string s*/const TTextMessage& text)
-{
-		// Buffer to hold message details which are being sent 
-		char cBuffer[100];
-		//Create a message object to fill and call its ToBuffer() method
-		MTextMessage* pMTextmessage = new MTextMessage(33, text);
-	    // Filling the Buffer with the message objects details
-		pMTextmessage->ToBuffer(cBuffer);
-		//Sending the Buffer to server
-		int nRet = CAsyncSocket::Send(cBuffer, sizeof(cBuffer));
-		//TODO: define meaninful values for return values
-		return nRet;
-};
-
-	
-void CMefathimSocket::OnClose(int nErrorCode)
-{
-	AfxMessageBox(L"Wow - connection closed...");
-}
+	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/

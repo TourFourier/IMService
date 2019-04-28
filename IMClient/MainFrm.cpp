@@ -5,7 +5,9 @@
 #include "stdafx.h"
 #include "IMClient.h"
 #include "afxsock.h"
-
+#include "Windows.h"
+#include "winuser.h"
+#include <string>
 #include "CCommunication_Client.h"
 
 #include "MainFrm.h"
@@ -414,8 +416,25 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
+	static int count = 1;
+
+	//char szTemp[128];
+	//GetDlgItemTextA(hwnd, IDC_EDIT, szTemp, 128);
+
 	// TODO: Add your message handler code here and/or call default
-	CCommunication_Client::GetInstance()->Tick();
+	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
+
+	TTextMessage text;
+	auto s = std::to_string(count);
+	CString Cs(s.c_str());
+	text.m_sText = _T("test text" + Cs);
+	text.m_userDestination.guid = 17;
+	text.m_userDestination.sName = _T("dave");
+	text.m_userDestination.sPhoneNumber = _T(" 058 ");
+	text.m_groupDestination.guid = 12; 
+
+	pCC->SendTextMessage(text);
+	pCC->Tick();
 
 
 	CFrameWndEx::OnTimer(nIDEvent);
