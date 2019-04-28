@@ -4,6 +4,9 @@
 
 #include "stdafx.h"
 #include "IMClient.h"
+#include "afxsock.h"
+
+#include "CCommunication_Client.h"
 
 #include "MainFrm.h"
 
@@ -412,6 +415,7 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
+	CCommunication_Client::GetInstance()->Tick();
 
 
 	CFrameWndEx::OnTimer(nIDEvent);

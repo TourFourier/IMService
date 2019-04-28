@@ -20,7 +20,8 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++SOCKET_NUMBER))
+// Hard coded cient number but should be dynamic
+CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client")// + std::to_string(2))//++SOCKET_NUMBER))
 {
 	Register();
 }

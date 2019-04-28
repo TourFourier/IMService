@@ -150,7 +150,8 @@ BOOL CIMClientApp::InitInstance()
 	BOOL bAfxSocketInitiated = ::AfxSocketInit();
 	if (bAfxSocketInitiated == TRUE)
 	{
-		CCommunication_Client*  p_CC = CCommunication_Client::GetInstance();
+		//CMefathimSocket* psocketClient = new CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(2));
+		CMefathimSocket*  p_CC = CCommunication_Client::GetInstance();
 		BOOL bCreated = p_CC->Create();
 		if (bCreated)
 		{

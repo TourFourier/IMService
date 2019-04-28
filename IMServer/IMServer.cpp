@@ -9,6 +9,7 @@
 #include "../GenComm/constants.h"
 #include "../GenComm/CMefathimsocket.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
+#include "CCommunication_Server.h"
 #include "IMServer.h"
 #include "MainFrm.h"
 #include "IMServerDoc.h"
@@ -150,12 +151,12 @@ BOOL CIMServerApp::InitInstance()
 	BOOL bInitiated = ::AfxSocketInit();
 	if (bInitiated)
 	{
-		CMefathimSocket* pSocket = new CMefathimSocket(new CMessageFactory_WhatsApp, "Server");
+		CMefathimSocket* p_CS = CCommunication_Server::GetInstance(); 
 		//CAsyncSocket socket;
-		BOOL bCreated = pSocket->Create(100);
+		BOOL bCreated = p_CS->Create(100);
 		if (bCreated)
 		{
-			BOOL bListening = pSocket->Listen();
+			BOOL bListening = p_CS->Listen();
 		}
 	}
 

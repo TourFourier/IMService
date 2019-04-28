@@ -38,13 +38,16 @@ public:
 	}
 
 	// Getters for the queues 
-	const CSafeMessageQueue& GetTextMessagesQueue() { return m_queueTextMessages; }
-    const CSafeMessageQueue& GetGroupCreateUpdateMessagesQueue() { return m_queueGroupCreateUpdateMessages; }
-	const CSafeMessageQueue& GetAcknowledgeMessagesQueue() { return m_queueAcknowledge; }
+	 CSafeMessageQueue& GetTextMessagesQueue() { return m_queueTextMessages; }
+     CSafeMessageQueue& GetGroupCreateUpdateMessagesQueue() { return m_queueGroupCreateUpdateMessages; }
+	 CSafeMessageQueue& GetAcknowledgeMessagesQueue() { return m_queueAcknowledge; }
 
 	// methods for OUTGOING messages; must IMPLEMENT
 	void SendTextMessage(const TTextMessage& text); // argument: struct (3) // IMPLEMENTATION WILL INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
 	void SendGroupCreateUpdate(const TGroup& group); // argument: struct (2)
 	void SendAck(const TTextMessage& textMessageToAck); // argument: struct (3)
+
+	void HandleIncomingMessages(); 
+	void Tick();
 };
 

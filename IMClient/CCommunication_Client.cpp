@@ -19,7 +19,8 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client" + std::to_string(++SOCKET_NUMBER))   
+// Hard coded cient number but should be dynamic
+CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client")// + std::to_string(1))//++SOCKET_NUMBER))   
 {
 	Register();
 }
@@ -62,3 +63,21 @@ void CCommunication_Client::SendTextMessage(const TTextMessage& text)
 };
 void CCommunication_Client::SendGroupCreateUpdate(const TGroup& group) {};
 void CCommunication_Client::SendAck(const TTextMessage& textMessageToAck) {};
+
+void CCommunication_Client::HandleIncomingMessages()
+{
+	MTextMessage* pMessageToHandle = NULL;  // pointer to text message obj
+	// while runs if test is not 0 even if value is negative; a pointer holds a number ie. address, and so long as it is not null it evals to true
+	// This leaves me with an Imessage obj (if the queue wasn't empty). We then dynamic cast it to a text message
+	while (pMessageToHandle = dynamic_cast<MTextMessage*>(CCommunication_Client::GetInstance()->GetTextMessagesQueue().Pop()))
+	{
+		// Update window (and DB)
+		OnTextMessageReceived((dynamic_cast<MTextMessage*>(pMessageToHandle)->GetTextMessage()));
+	}
+}
+
+// Tick function for main to call
+void CCommunication_Client::Tick()
+{
+	this->HandleIncomingMessages();
+}
