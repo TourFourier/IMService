@@ -413,29 +413,42 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	m_wndOutput.UpdateFonts();
 }
 
-
+static int count2 = 0;
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	static int count = 1;
-
-	//char szTemp[128];
-	//GetDlgItemTextA(hwnd, IDC_EDIT, szTemp, 128);
-
-	// TODO: Add your message handler code here and/or call default
+	//static int count;
 	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
 
-	TTextMessage text;
-	auto s = std::to_string(count);
-	CString Cs(s.c_str());
-	text.m_sText = _T("test text" + Cs);
-	text.m_userDestination.guid = 17;
-	text.m_userDestination.sName = _T("dave");
-	text.m_userDestination.sPhoneNumber = _T(" 058 ");
-	text.m_groupDestination.guid = 12; 
+	if (count2 < 3)
+	{
+		// TODO: Add your message handler code here and/or call default
+		count2++;
 
-	pCC->SendTextMessage(text);
+		TTextMessage text;
+		auto s = std::to_string(count2);
+		CString Cs(s.c_str());
+		//AfxMessageBox(L"first count" + Cs);
+
+		//AfxMessageBox(Cs);
+		text.m_sText = (L"test text" + Cs);
+		text.m_userDestination.guid = 17;
+		text.m_userDestination.sName = (L"dave");
+		text.m_userDestination.sPhoneNumber = (L" 058 ");
+		text.m_groupDestination.guid = 12;
+		//AfxMessageBox(L"about to send text");
+
+		pCC->SendTextMessage(text);
+		//AfxMessageBox(L"sent text");
+
+		//auto a = std::to_string(count2);
+		//CString Ca(a.c_str());
+		//AfxMessageBox(L"new" + Ca);
+
+	}
+	//AfxMessageBox(L"about to call tick");
+
 	pCC->Tick();
-
+	//AfxMessageBox(L"called tick");
 
 	CFrameWndEx::OnTimer(nIDEvent);
 }

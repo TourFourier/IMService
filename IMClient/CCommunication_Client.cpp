@@ -36,7 +36,7 @@ void CCommunication_Client::OnTextMessageReceived(IMessage* pMessage)
 	CCommunication_Client::GetInstance()->m_queueTextMessages.Push((MTextMessage*)pMessage);
 }
 
-void CCommunication_Client::OnGroupCreateUpdateReceived(IMessage* pMessage)
+/*void CCommunication_Client::OnGroupCreateUpdateReceived(IMessage* pMessage)
 {
 	CCommunication_Client::GetInstance()->m_queueGroupCreateUpdateMessages.Push((MGroupCreateUpdate*)pMessage);
 }
@@ -44,7 +44,7 @@ void CCommunication_Client::OnGroupCreateUpdateReceived(IMessage* pMessage)
 void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
 {
 	CCommunication_Client::GetInstance()->m_queueAcknowledge.Push((MAcknowledgeMessage*)pMessage);
-}
+}*/
 
 void CCommunication_Client::Register()
 {
@@ -73,7 +73,8 @@ void CCommunication_Client::HandleIncomingMessages()
 	MTextMessage* pMessageToHandle = NULL;  // pointer to text message obj
 	// while runs if test is not 0 even if value is negative; a pointer holds a number ie. address, and so long as it is not null it evals to true
 	// This leaves me with an Imessage obj (if the queue wasn't empty). We then dynamic cast it to a text message
-	while (pMessageToHandle = dynamic_cast<MTextMessage*>(CCommunication_Client::GetInstance()->GetTextMessagesQueue().Pop()))
+	while (!CCommunication_Client::GetInstance()->GetTextMessagesQueue().m_qMessageQueue.empty())
+	//while (pMessageToHandle = dynamic_cast<MTextMessage*>(CCommunication_Client::GetInstance()->GetTextMessagesQueue().Pop()))
 	{
 		// Update window (and DB); In Primitive version just post a message box with the text received
 		//OnTextMessageReceived((dynamic_cast<MTextMessage*>pMessageToHandle)->GetTextMessage()));
@@ -81,6 +82,14 @@ void CCommunication_Client::HandleIncomingMessages()
 		::AfxMessageBox(text);
 	}
 }
+
+// Tick function for main to call
+void CCommunication_Client::Tick()
+{
+	this->HandleIncomingMessages();
+}
+
+
 
 //void CCommunication_Client::SendGroupCreateUpdate(const TGroup& group) {};
 //void CCommunication_Client::SendAck(const TTextMessage& textMessageToAck) {};
@@ -97,9 +106,3 @@ void CCommunication_Client::HandleIncomingMessages()
 	//TODO: define meaninful values for return values
 	return nRet;
 }*/
-
-// Tick function for main to call
-void CCommunication_Client::Tick()
-{
-	this->HandleIncomingMessages();
-}

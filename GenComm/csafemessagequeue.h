@@ -6,9 +6,9 @@ using namespace std;
 
 class  CSafeMessageQueue
 {
+public:
 	CRITICAL_SECTION m_cs;
 	std::queue<IMessage*> m_qMessageQueue;
-public:
 	CSafeMessageQueue();
 	~CSafeMessageQueue();
 
