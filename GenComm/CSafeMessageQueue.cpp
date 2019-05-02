@@ -28,10 +28,12 @@ IMessage* CSafeMessageQueue::Pop()
 {
 	if (!m_qMessageQueue.empty())
 	{
+		IMessage* retVal;
 		EnterCriticalSection(&m_cs);
-		return m_qMessageQueue.front();
+		retVal = m_qMessageQueue.front();
 		m_qMessageQueue.pop();
 		LeaveCriticalSection(&m_cs);
+		return retVal;
 	}
 	return;
 }
