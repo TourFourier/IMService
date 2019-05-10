@@ -47,6 +47,7 @@ void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
 void CCommunication_Client::Register()
 {
 	//since RegisterCallback is an inherited method, using "this->" makes it clear that this method exists in this object(even though it is technically unnecessary)
+	// NOTE: I made these callbacks static in which case i do not need to have an obj (GetInstance()) rather i call them from the class (CCommunication_Client::Callback)
 	this->RegisterCallback(EMessageType::TEXT_MESSAGE, CCommunication_Client::GetInstance()->OnTextMessageReceived);
 	this->RegisterCallback(EMessageType::CREATE_UPDATE_GROUP, CCommunication_Client::GetInstance()->OnGroupCreateUpdateReceived);
 	this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
