@@ -8,6 +8,6 @@ public:
 	IMessageFactory();
 	~IMessageFactory();
 
-	virtual IMessage* CreateMessage(int type) = 0;
+	virtual IMessage* CreateMessage(EMessageType type) = 0;
 };
 

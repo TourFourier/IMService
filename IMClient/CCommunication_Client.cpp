@@ -45,11 +45,12 @@ void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
 {
 	CCommunication_Client::GetInstance()->m_queueAcknowledge.Push((MAcknowledgeMessage*)pMessage);
 }*/
-
+//void RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*));
 void CCommunication_Client::Register()
 {
+	void(*fptr)(IMessage*) = this->OnTextMessageReceived;
 	//since RegisterCallback is an inherited method, using "this->" makes it clear that this method exists in this object(even though it is technically unnecessary)
-	this->RegisterCallback(EMessageType::TEXT_MESSAGE, CCommunication_Client::GetInstance()->OnTextMessageReceived);
+	RegisterCallback(TEXT_MESSAGE, fptr);// &(this->OnTextMessageReceived));
 	//this->RegisterCallback(EMessageType::CREATE_UPDATE_GROUP, CCommunication_Client::GetInstance()->OnGroupCreateUpdateReceived);
 	//this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
 }

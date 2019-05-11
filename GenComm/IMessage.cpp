@@ -4,16 +4,10 @@
 //#include <rpc.h>
 
 
-IMessage::IMessage()
-{
-
-}
-
-IMessage::IMessage(int guid, int messageType)
-{
-	m_guid = guid;
-	m_nMessageType = messageType;
-}
+IMessage::IMessage(int guid, int messageType):
+m_guid(guid),
+m_nMessageType(messageType)
+{}
 
 
 IMessage::~IMessage()
