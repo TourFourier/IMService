@@ -152,7 +152,6 @@ BOOL CIMServerApp::InitInstance()
 	if (bInitiated)
 	{
 		CCommunication_Server* p_CS = CCommunication_Server::GetInstance();
-		//CAsyncSocket socket;
 		BOOL bCreated = p_CS->Create(100);
 		if (bCreated)
 		{

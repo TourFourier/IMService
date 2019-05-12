@@ -12,7 +12,7 @@
 #include <iostream>
 #include "CMefathimSocket.h"
 
-static const int BUFFER_LENGTH = 100;
+//static const int BUFFER_LENGTH = 100;
 std::list <CMefathimSocket*> CMefathimSocket::m_listSocketsToClient;
 
 
@@ -47,6 +47,8 @@ void CMefathimSocket::OnAccept(int nErrorCode)
 	// Create new socket for the connection to requesting client:
 	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
+	CString sName(pNewSocket->m_sSocketName.c_str());
+	::AfxMessageBox(sName + L" is added to the server socket list");
 	// Accept client request by binding new socket to the clients ip and port
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
 
@@ -78,7 +80,7 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 		//::AfxMessageBox(L"text message received by " + Ca);
 
 	// Create a buffer to received the message:
-	const int RECEIVE_BUFFER_SIZE = 100;
+	const int RECEIVE_BUFFER_SIZE = 300;
 	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
 	// Receive the message:
 	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
@@ -89,7 +91,7 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	}
 
 	// If recipient is a client: call onMessageReceived() to get the message object and call its callback
-	if ((this->m_sSocketName.compare("Client")) == 0)
+	if (this->m_sSocketName == "Client")
 	{
 		OnMessageReceived(arrBuffer);
 	}

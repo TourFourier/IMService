@@ -413,33 +413,20 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	m_wndOutput.UpdateFonts();
 }
 
-static int count2 = 0;
+	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
+	static int textCount = 0;
+
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	//static int count;
-	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
-	while (true)
-	{
+	
+	
 
 		/*if (!(pCC->GetTextMessagesQueue().Empty()))
 		{
 			// TODO: Add your message handler code here and/or call default
-			count2++;
-
-			TTextMessage text;
-			auto s = std::to_string(count2);
-			CString Cs(s.c_str());
 			//AfxMessageBox(L"first count" + Cs);
 
 			//AfxMessageBox(Cs);
-			text.m_sText = (L"test text" + Cs);
-			text.m_userDestination.guid = 17;
-			text.m_userDestination.sName = (L"dave");
-			text.m_userDestination.sPhoneNumber = (L" 058 ");
-			text.m_groupDestination.guid = 12;
-			//AfxMessageBox(L"about to send text");
-
-			pCC->SendTextMessage(text);
 			//AfxMessageBox(L"sent text");
 
 			//auto a = std::to_string(count2);
@@ -448,9 +435,23 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 
 		}
 		//AfxMessageBox(L"about to call tick");*/
+			++textCount;
+
+			auto s = std::to_string(textCount);
+			CString Cs(s.c_str());
+			TTextMessage text;
+			text.m_sText = (L"test text" + Cs);
+			text.m_userDestination.guid = 17;
+			text.m_userDestination.sName = (L"dave");
+			text.m_userDestination.sPhoneNumber = (L" 058 ");
+			text.m_groupDestination.guid = 12;
+			//AfxMessageBox(L"about to send text");
+			pCC->SendTextMessage(text);
+
+			Sleep(5000);
 
 		pCC->Tick();
 		//AfxMessageBox(L"called tick");
-	}
+	
 	CFrameWndEx::OnTimer(nIDEvent);
 }

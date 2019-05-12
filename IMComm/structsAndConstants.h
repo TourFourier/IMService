@@ -82,6 +82,11 @@ struct TTextMessage
 	}
 };
 */
+
+//static const int SIZE_GUID = sizeof(int);
+//static const int SIZE_INT = sizeof(int);
+
+
 struct TUser
 {
 	int guid; // "Global unique id"  a unique id that identifies this user globally
@@ -89,13 +94,45 @@ struct TUser
 	CString sPhoneNumber;
 	char* ToBuffer(char* pBuffer)
 	{
-		*(int*)pBuffer = guid;
-		//pBuffer = StringToBuffer((pBuffer + sizeof(int)), sName);
-		//pBuffer = StringToBuffer(pBuffer, sPhoneNumber);
+		int guidLength = sizeof(guid);
+		int nameLength = sName.GetLength() * 2;
+		int phoneNumberLength = sPhoneNumber.GetLength() * 2;
 
-		memcpy((pBuffer + sizeof(int)), sName.GetBuffer(), sName.GetLength() * 2);
-		memcpy((pBuffer + sizeof(int) + (sName.GetLength() * 2)), sPhoneNumber.GetBuffer(), sPhoneNumber.GetLength() * 2);
-		pBuffer = (pBuffer + sizeof(int) + (sName.GetLength() * 2) + (sPhoneNumber.GetLength() * 2));
+		*(int*)pBuffer = guidLength;
+		*(int*)(pBuffer + SIZE_INT) = guid;
+		*(int*)(pBuffer + SIZE_INT + SIZE_GUID) = nameLength;
+		memcpy((pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT), sName.GetBuffer(), nameLength);
+		*(int*)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength) = phoneNumberLength;
+		memcpy((pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT), sPhoneNumber.GetBuffer(), phoneNumberLength);
+		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + phoneNumberLength);
+
+		return pBuffer;
+	}
+
+	char* FromBuffer(char* pBuffer)
+	{
+		int sizeOfNext;// the size of this variable itself is SIZE_INT
+
+		sizeOfNext = *(int*)pBuffer;
+		guid = *(int*)pBuffer + sizeOfNext;
+		sizeOfNext = *(int*)pBuffer + sizeOfNext + SIZE_GUID;
+		// sizeOfNext's value is probably no longer same size as an int therefor move pointer SIZE_INT instead of sizeOfNext
+		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT);
+		for (int i = 0; i < sizeOfNext; i++)
+		{
+			sName += *(CString*)(pBuffer + i);
+		}
+		// Move pointer over to end of sName
+		pBuffer = (pBuffer + sizeOfNext);
+		// Get size of phone number
+		sizeOfNext = *(int*)pBuffer;
+		// Move pointer over to point at ohone number so loop can be kept simple
+		pBuffer = (pBuffer + SIZE_INT);
+		for (int i = 0; i < sizeOfNext; i++)
+		{
+			sPhoneNumber += *(CString*)(pBuffer + i);
+		}
+		pBuffer = (pBuffer + sizeOfNext);
 
 		return pBuffer;
 	}
@@ -112,12 +149,28 @@ struct TGroup
 	{
 		//char* p_temp = pBuffer;
 		*(int*)pBuffer = guid;
-		pBuffer = (pBuffer + sizeof(int));
+		pBuffer = (pBuffer + SIZE_GUID);
 		for (auto it = nlistUsers.begin(); it != nlistUsers.end(); ++it)
 		{
 			pBuffer = (it->ToBuffer(pBuffer));
 		}
 		return pBuffer;
+	}
+
+	void FromBuffer(char* pBuffer)
+	{
+		int sizeOfNext;// the size of this variable itself is SIZE_INT
+
+		sizeOfNext = *(int*)pBuffer;
+		guid = *(int*)pBuffer + sizeOfNext;
+		pBuffer = pBuffer + SIZE_INT + SIZE_GUID;
+		// sizeOfNext's value is probably no longer same size as an int therefor move pointer SIZE_INT instead of sizeOfNext
+		for (auto it = nlistUsers.begin(); it != nlistUsers.end(); ++it)
+		{
+			pBuffer = (it->FromBuffer(pBuffer));
+		}
+
+		return;
 	}
 };
 
@@ -134,17 +187,31 @@ struct TTextMessage
 		//buffer containing the CString; the string is in unicode and therefor is alloted 2 bytes for each letter;
 		// GetBuffer() returns the number of letters and therfor we must multi by 2 to get the bytes.
 		//pBuffer = StringToBuffer(pBuffer, m_sText);
-		//int textLength = m_sText.GetLength() * 2;
-
-		memcpy(pBuffer, m_sText.GetBuffer(), m_sText.GetLength() * 2);
-		pBuffer = pBuffer + (m_sText.GetLength() * 2);
+		
+		int textLength = m_sText.GetLength() * 2;
+		*(int*)pBuffer = textLength;
+		// Add text message(CString) to the buffer
+		memcpy((pBuffer + SIZE_INT), m_sText.GetBuffer(), textLength);
+		// Move buffer pointer over and pass on the buffer to TUser struct to deal with
+		pBuffer = pBuffer + SIZE_INT + textLength;
 		pBuffer = m_userDestination.ToBuffer(pBuffer);
 		pBuffer = m_groupDestination.ToBuffer(pBuffer);
 	}
 
-	void FormBuffer(char* pBuffer)
+	void FromBuffer(char* pBuffer)
 	{
-		m_sText.
+		int sizeOfNext;// the size of this variable itself is SIZE_INT
+		
+		sizeOfNext = *(int*)pBuffer;
+		//m_sText = *(CString*)(pBuffer + sizeOfNext);
+		pBuffer = (pBuffer + SIZE_INT);
+		for (int i = 0; i < sizeOfNext; i++)
+		{
+			m_sText += *(CString*)(pBuffer + i);
+		}
+		pBuffer = (pBuffer + sizeOfNext);
+		pBuffer = m_userDestination.FromBuffer(pBuffer);
+		m_groupDestination.FromBuffer(pBuffer);
 	}
 
 };
