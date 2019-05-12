@@ -14,10 +14,9 @@
 
 class CMefathimSocket : public CAsyncSocket
 {
-	static std::list<CMefathimSocket*> m_listSocketsToClient;
 	// For server side usage only:
+	static std::list<CMefathimSocket*> m_listSocketsToClient;
 	std::string m_sSocketName;
-	//int m_SocketNumber;
 protected:
 	IMessageFactory* m_pMessageFactory;// This is to create a message of specific type upon receipt of buffer
 	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
