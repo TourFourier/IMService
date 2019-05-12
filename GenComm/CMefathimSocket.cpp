@@ -45,7 +45,7 @@ void CMefathimSocket::OnAccept(int nErrorCode)
 {
 		//::AfxMessageBox(L"received connection request");
 	// Create new socket for the connection to requesting client:
-	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + "Socket" + std::to_string(++SOCKET_NUMBER));
+	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
 	// Accept client request by binding new socket to the clients ip and port
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
@@ -93,9 +93,9 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	{
 		OnMessageReceived(arrBuffer);
 	}
+	// If recipient is the Server: receive buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
 	else
 	{
-		// Server receives buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
 		for (auto it : m_listSocketsToClient)
 		{
 			if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
