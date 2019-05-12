@@ -100,7 +100,7 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 		{
 			if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
 			{
-				it->Send(arrBuffer, sizeof(arrBuffer));
+				it->Send(arrBuffer, RECEIVE_BUFFER_SIZE);
 			}
 		}
 	}	

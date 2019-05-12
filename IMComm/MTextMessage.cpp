@@ -13,7 +13,7 @@ MTextMessage::MTextMessage()
 {
 }
 
-MTextMessage::MTextMessage(int guid,const TTextMessage& message) : IMessage( guid , (int)EMessageType::TEXT_MESSAGE)
+MTextMessage::MTextMessage(int guid,const TTextMessage& message) : IMessage( guid , TEXT_MESSAGE)
 {
 	m_msgText.m_sText = message.m_sText;
 	m_msgText.m_userDestination = message.m_userDestination;
@@ -40,11 +40,14 @@ int MTextMessage::Size()
 
 bool MTextMessage::ToBuffer(char* cBuffer)
 {
-	
+	// 1) Fill  buffer with basic fields of the MTextMessage object
+	// Casting the buffer pointer to what it is pointing to ie. int, int, int
 	*(int*)cBuffer = m_guid;
-	*(int*)(cBuffer + ::SIZE_GUID) = (int)EMessageType::TEXT_MESSAGE;
-	*(int*)(cBuffer + ::SIZE_GUID + ::SIZE_INT) = this->Size();
-	cBuffer = cBuffer + ::SIZE_GUID + ::SIZE_INT + ::SIZE_INT;
+	*(int*)(cBuffer + SIZE_GUID) = static_cast<int>(TEXT_MESSAGE);
+	*(int*)(cBuffer + SIZE_GUID + SIZE_INT) = this->Size();
+	// Moving buffer pointer over by the amount of bytes that were allocated values in the buffer
+	cBuffer = cBuffer + SIZE_GUID + SIZE_INT + SIZE_INT;
+	// 2) Fill rest of buffer with TTextMessage by calling its ToBuffer() method
 	this->m_msgText.ToBuffer(cBuffer);
 	//*(TTextMessage*)(cBuffer + IMessage::SIZE_GUID + IMessage::SIZE_INT + IMessage::SIZE_INT) = m_msgText;
 
@@ -54,16 +57,16 @@ bool MTextMessage::ToBuffer(char* cBuffer)
  bool MTextMessage::FromBuffer(char* pBuffer)
 {
 	//char* sync = *(char*)pBuffer;
-	/*int totalSize;
+	//int totalSize;
 	int sizeWithoutMessage;
 	int sizeOfMessage;
 
 
 	m_guid = *(int*)pBuffer;
-	m_nMessageType = *(int*)(pBuffer + IMessage::SIZE_GUID);
-	totalSize = *(int*)(pBuffer + IMessage::SIZE_GUID + IMessage::SIZE_INT);
-	sizeWithoutMessage = (IMessage::SIZE_GUID + IMessage::SIZE_INT + IMessage::SIZE_INT);
-	sizeOfMessage = totalSize - sizeWithoutMessage;
+	m_nMessageType = *(int*)(pBuffer + SIZE_GUID);
+	//totalSize = *(int*)(pBuffer + SIZE_GUID + SIZE_INT);
+	//sizeWithoutMessage = (SIZE_GUID + SIZE_INT + SIZE_INT);
+	//sizeOfMessage = totalSize - sizeWithoutMessage;
 
 	for (int i = sizeWithoutMessage; i < sizeOfMessage;i++)
 	{
@@ -73,6 +76,6 @@ bool MTextMessage::ToBuffer(char* cBuffer)
 	m_msgText = *(TTextMessage*)(pBuffer + sizeWithoutMessage);
 	// Note: the size of the text struct will differ depends on the text message and recipients...
 	//...therefor must adjust to read that much of buffer or have a sync word/#       
-	*/
+	
 	return 0;
 }

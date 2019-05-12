@@ -18,24 +18,26 @@ private:
 
 	CCommunication_Client(/*CString sConnectionDetails*/);
 public:
-	// This method fills a hash tablewith message type and corresponding callback function    
-	void Register();
+	~CCommunication_Client();
+	static CCommunication_Client* GetInstance()  // SINGLETON              
+	{
+		if (s_pCCommunicationClient == NULL)
+		{
+	
+		s_pCCommunicationClient = new CCommunication_Client;
+		}
+		return s_pCCommunicationClient;
+	}
 
+	// This method fills a hash tablewith message type and corresponding callback function and is called in CComm's constructor  
+	void Register();
 
 	// These are the callback functions ie. for when a new message or ack or group  occur
 	static void OnTextMessageReceived(IMessage* pMessage);
 	static void OnGroupCreateUpdateReceived(IMessage* pMessage);
 	static void OnAcknowledgeReceived(IMessage* pMessage);
-	~CCommunication_Client();
 
-	static CCommunication_Client* GetInstance()  // SINGLETON              
-	{
-		if (s_pCCommunicationClient == NULL)
-		{
-			s_pCCommunicationClient = new CCommunication_Client;
-		}
-		return s_pCCommunicationClient;
-	}
+
 
 	// Getters for the queues 
 	 CSafeMessageQueue& GetTextMessagesQueue() { return m_queueTextMessages; }

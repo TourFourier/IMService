@@ -134,11 +134,19 @@ struct TTextMessage
 		//buffer containing the CString; the string is in unicode and therefor is alloted 2 bytes for each letter;
 		// GetBuffer() returns the number of letters and therfor we must multi by 2 to get the bytes.
 		//pBuffer = StringToBuffer(pBuffer, m_sText);
+		//int textLength = m_sText.GetLength() * 2;
+
 		memcpy(pBuffer, m_sText.GetBuffer(), m_sText.GetLength() * 2);
 		pBuffer = pBuffer + (m_sText.GetLength() * 2);
 		pBuffer = m_userDestination.ToBuffer(pBuffer);
 		pBuffer = m_groupDestination.ToBuffer(pBuffer);
 	}
+
+	void FormBuffer(char* pBuffer)
+	{
+		m_sText.
+	}
+
 };
 
 enum EMessageType

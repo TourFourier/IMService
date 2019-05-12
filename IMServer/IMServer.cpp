@@ -151,7 +151,7 @@ BOOL CIMServerApp::InitInstance()
 	BOOL bInitiated = ::AfxSocketInit();
 	if (bInitiated)
 	{
-		CMefathimSocket* p_CS = CCommunication_Server::GetInstance(); 
+		CCommunication_Server* p_CS = CCommunication_Server::GetInstance();
 		//CAsyncSocket socket;
 		BOOL bCreated = p_CS->Create(100);
 		if (bCreated)

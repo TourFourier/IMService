@@ -45,7 +45,14 @@ void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
 {
 	CCommunication_Client::GetInstance()->m_queueAcknowledge.Push((MAcknowledgeMessage*)pMessage);
 }*/
-//void RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*));
+
+
+
+/*std::map<EMessageType, void*> m_hashCallbacks;
+void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*))
+{
+	m_hashCallbacks.insert(std::pair<EMessageType, void(*)(IMessage*)>(eMessageType, pfnCallback));
+}*/
 void CCommunication_Client::Register()
 {
 	void(*fptr)(IMessage*) = this->OnTextMessageReceived;
@@ -59,28 +66,32 @@ void CCommunication_Client::Register()
 void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
 {	
 	//Create a message object to fill and call its ToBuffer() method
-	MTextMessage* pMTextmessage = new MTextMessage(1,text);
+	MTextMessage* pMTextmessage = new MTextMessage(613,text);
 	// Buffer to hold message details which are being sent 
 	char* cBuffer = new char[pMTextmessage->Size()];
 	// Filling the Buffer with the message objects details
 	pMTextmessage->ToBuffer(cBuffer);
 	//Sending the Buffer to server
-	this->Send(cBuffer, sizeof(cBuffer));
+	this->Send(cBuffer, pMTextmessage->Size());
 };
 
 
 void CCommunication_Client::HandleIncomingMessages()
 {
-	MTextMessage* pMessageToHandle = NULL;  // pointer to text message obj
-	// while runs if test is not 0 even if value is negative; a pointer holds a number ie. address, and so long as it is not null it evals to true
-	// This leaves me with an Imessage obj (if the queue wasn't empty). We then dynamic cast it to a text message
-	while (!CCommunication_Client::GetInstance()->GetTextMessagesQueue().m_qMessageQueue.empty())
-	//while (pMessageToHandle = dynamic_cast<MTextMessage*>(CCommunication_Client::GetInstance()->GetTextMessagesQueue().Pop()))
+	if (!(GetTextMessagesQueue().Empty()))
 	{
-		// Update window (and DB); In Primitive version just post a message box with the text received
-		//OnTextMessageReceived((dynamic_cast<MTextMessage*>pMessageToHandle)->GetTextMessage()));
+		MTextMessage* pMessageToHandle = NULL;  // pointer to text message obj
+		pMessageToHandle = dynamic_cast<MTextMessage*>(GetTextMessagesQueue().Pop());
 		CString text = pMessageToHandle->GetTextMessage().m_sText;
 		::AfxMessageBox(text);
+		Sleep(5000);
+		// while runs if test is not 0 even if value is negative; a pointer holds a number ie. address, and so long as it is not null it evals to true
+		// This leaves me with an Imessage obj (if the queue wasn't empty). We then dynamic cast it to a text message
+		//while (!(GetTextMessagesQueue().Empty()))
+		//while (pMessageToHandle = dynamic_cast<MTextMessage*>(CCommunication_Client::GetInstance()->GetTextMessagesQueue().Pop()))
+		//{
+			// Update window (and DB); In Primitive version just post a message box with the text received
+			//OnTextMessageReceived((dynamic_cast<MTextMessage*>pMessageToHandle)->GetTextMessage()));
 	}
 }
 

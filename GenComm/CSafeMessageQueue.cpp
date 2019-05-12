@@ -28,13 +28,24 @@ void CSafeMessageQueue::Push(IMessage* message)
 IMessage* CSafeMessageQueue::Pop()
 {
 		IMessage* retVal = nullptr;
+		EnterCriticalSection(&m_cs);
 	if (!m_qMessageQueue.empty())
 	{
-		EnterCriticalSection(&m_cs);
 		retVal = m_qMessageQueue.front();
 		m_qMessageQueue.pop();
 		LeaveCriticalSection(&m_cs);
 		return retVal;
 	}
 	return retVal;
+}
+
+bool CSafeMessageQueue::Empty()
+{
+	EnterCriticalSection(&m_cs);
+	if (!m_qMessageQueue.empty())
+	{
+		return false;
+	}
+	return true;
+	LeaveCriticalSection(&m_cs);
 }

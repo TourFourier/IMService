@@ -4,9 +4,9 @@
 //#include <rpc.h>
 
 
-IMessage::IMessage(int guid, int messageType):
+IMessage::IMessage(int guid, EMessageType messageType):
 m_guid(guid),
-m_nMessageType(messageType)
+m_nMessageType(static_cast<int>(messageType))
 {}
 
 

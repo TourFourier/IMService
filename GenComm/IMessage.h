@@ -9,7 +9,8 @@ protected:
 	//upon receipt of buffer, typecast this member into an EMessageType to get message type as enum(see from buffer definition)
 
 public:
-	IMessage(int guid=0, int messageType=0);
+	IMessage(int guid, EMessageType messageType);
+	IMessage() {}
 	virtual ~IMessage();
 
 	
