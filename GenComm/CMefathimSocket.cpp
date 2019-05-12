@@ -28,12 +28,12 @@ CMefathimSocket::~CMefathimSocket()
 }
 
 
-void CMefathimSocket::RegisterCallback(int eMessageType, void(*pfnCallback)(IMessage*))
+void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*))
 {
-	m_hashCallbacks.insert(std::pair<int, void*>(eMessageType, pfnCallback));
+	m_hashCallbacks.insert(std::pair<EMessageType, void(*)(IMessage*)>(eMessageType, pfnCallback));
 }
 
-void CMefathimSocket::RemoveCallback(int eMessageType)
+void CMefathimSocket::RemoveCallback(EMessageType eMessageType)
 {
 	m_hashCallbacks.erase(eMessageType);
 }
@@ -45,7 +45,7 @@ void CMefathimSocket::OnAccept(int nErrorCode)
 {
 		//::AfxMessageBox(L"received connection request");
 	// Create new socket for the connection to requesting client:
-	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + "Socket" + std::to_string(++SOCKET_NUMBER));
+	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
 	this->m_listSocketsToClient.push_back(pNewSocket);
 	// Accept client request by binding new socket to the clients ip and port
 	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
@@ -89,16 +89,16 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 	}
 
 	// If recipient is a client: call onMessageReceived() to get the message object and call its callback
-	if (this->m_sSocketName.compare("Client"))
+	if ((this->m_sSocketName.compare("Client")) == 0)
 	{
 		OnMessageReceived(arrBuffer);
 	}
+	// If recipient is the Server: receive buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
 	else
 	{
-		// Server receives buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
-		for (auto it : CMefathimSocket::m_listSocketsToClient)
+		for (auto it : m_listSocketsToClient)
 		{
-			if ((it->m_sSocketName.compare(this->m_sSocketName)))
+			if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
 			{
 				it->Send(arrBuffer, sizeof(arrBuffer));
 			}
@@ -109,15 +109,16 @@ void CMefathimSocket::OnReceive(int nErrorCode)
 
 void CMefathimSocket::OnMessageReceived(char pBuffer[])
 {
-	// 0. Get message type from buffer (notice that in all messsages, first two
-	//    members are the GUID and then type (see IMessage class) ie. this will move pointer over to point at type variable in buffer array. 
+	// Get message type from buffer (notice that in all messsages, first two
+	// members are the GUID (in this implementation its an int and SIZE_GUID=sizeof(int)) and then type (see IMessage class) 
+	//ie. this will move pointer over to point at type variable in buffer array. 
 	//This explains the folowing line:
-	int type = *(int*)(pBuffer + sizeof(int));//move pointer over till reach type;cast to pointer to enum;get content of pointer
+	EMessageType type = *(EMessageType*)(pBuffer + SIZE_GUID);//move pointer over till reach type;cast to pointer to enum;get content of pointer
 	// 1. Create Message object by the type.
 	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
 	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
 	// 2. Call callback
-	void* callbacks = m_hashCallbacks[type]; // 'callbacks' : specif
+	void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
 	((void(*)(IMessage*))callbacks)(pMessage);
 }
 	

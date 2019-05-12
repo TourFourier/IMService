@@ -7,6 +7,6 @@ public:
    ~CMessageFactory_WhatsApp();
 
 public:
-	IMessage* CreateMessage(int type);
+	IMessage* CreateMessage(EMessageType type);
 };
 

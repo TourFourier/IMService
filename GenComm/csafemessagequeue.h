@@ -1,14 +1,13 @@
 #pragma once
-
-#include <synchapi.h>
-#include<queue>
+#include <queue>
+#include "IMessage.h"
 using namespace std;
 
 class  CSafeMessageQueue
 {
-	CRITICAL_SECTION m_cs;
-	std::queue<IMessage*> m_qMessageQueue;
 public:
+	CRITICAL_SECTION m_cs;
+	queue<IMessage*> m_qMessageQueue;
 	CSafeMessageQueue();
 	~CSafeMessageQueue();
 

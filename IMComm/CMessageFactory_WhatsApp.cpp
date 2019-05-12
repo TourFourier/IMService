@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "structsAndConstants.h"
-#include "structsAndConstants.cpp"
 #include "../GenComm/IMessage.h"
 #include "../GenComm/IMessageFactory.h"
 #include "MGroupCreateUpdate.h"
@@ -20,9 +19,9 @@ CMessageFactory_WhatsApp::~CMessageFactory_WhatsApp()
 }
 
 // Returns message object
-IMessage* CMessageFactory_WhatsApp::CreateMessage(int type)
+IMessage* CMessageFactory_WhatsApp::CreateMessage(EMessageType type)
 {
-	switch (((EMessageType)type))
+	switch (type)
 	{
 	/*case EMessageType::ACKNOWLEDGE:
 		return new MAcknowledgeMessage;

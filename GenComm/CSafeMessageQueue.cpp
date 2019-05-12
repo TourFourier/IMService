@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "IMessage.h"
+#include <synchapi.h>
 #include <queue>
+#include "IMessage.h"
 #include "CSafeMessageQueue.h"
 //#include <Windows.h>
 
@@ -26,8 +27,14 @@ void CSafeMessageQueue::Push(IMessage* message)
 
 IMessage* CSafeMessageQueue::Pop()
 {
-	EnterCriticalSection(&m_cs);
-	return m_qMessageQueue.front();
-	m_qMessageQueue.pop();
-	LeaveCriticalSection(&m_cs);
+		IMessage* retVal = nullptr;
+	if (!m_qMessageQueue.empty())
+	{
+		EnterCriticalSection(&m_cs);
+		retVal = m_qMessageQueue.front();
+		m_qMessageQueue.pop();
+		LeaveCriticalSection(&m_cs);
+		return retVal;
+	}
+	return retVal;
 }
