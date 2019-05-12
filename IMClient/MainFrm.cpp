@@ -413,28 +413,31 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	m_wndOutput.UpdateFonts();
 }
 
+static int flag_count = 0;
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	static int count = 1;
 
 	//char szTemp[128];
 	//GetDlgItemTextA(hwnd, IDC_EDIT, szTemp, 128);
 
 	// TODO: Add your message handler code here and/or call default
 	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
+	if (flag_count < 2)
+	{
+		flag_count++;
+		TTextMessage text;
+		auto s = std::to_string(flag_count);
+		CString Cs(s.c_str());
+		text.m_sText = (L"test text" + Cs);
+		text.m_userDestination.guid = 17;
+		text.m_userDestination.sName = (L"dave");
+		text.m_userDestination.sPhoneNumber = (L" 058 ");
+		text.m_groupDestination.guid = 12;
 
-	TTextMessage text;
-	auto s = std::to_string(count);
-	CString Cs(s.c_str());
-	text.m_sText = _T("test text" + Cs);
-	text.m_userDestination.guid = 17;
-	text.m_userDestination.sName = _T("dave");
-	text.m_userDestination.sPhoneNumber = _T(" 058 ");
-	text.m_groupDestination.guid = 12; 
-
-	pCC->SendTextMessage(text);
-	pCC->Tick();
+		pCC->SendTextMessage(text);
+	}
+	//pCC->Tick();
 
 
 	CFrameWndEx::OnTimer(nIDEvent);
