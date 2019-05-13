@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../GenComm/Constants.h"
 #include <atlstr.h>
 #include <rpc.h>
 #include <vector>

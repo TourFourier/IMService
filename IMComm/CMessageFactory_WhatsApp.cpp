@@ -31,4 +31,5 @@ IMessage* CMessageFactory_WhatsApp::CreateMessage(EMessageType type)
 		 case EMessageType::TEXT_MESSAGE:
 		return new MTextMessage;
 	}
+	return NULL;
 }

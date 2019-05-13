@@ -96,7 +96,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>"C:\Users\YL\source\repos\IMService\Debug\GenComm.lib";"C:\Users\YL\source\repos\IMService\Debug\IMComm.lib";</AdditionalDependencies>
+      <AdditionalDependencies>"C:\Users\User\source\repos\TourFourier\IMService\Debug\GenComm.lib";"C:\Users\User\source\repos\TourFourier\IMService\Debug\IMComm.lib";</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -26,7 +26,8 @@ public:
 	CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName);
 	~CMefathimSocket();
 
-	void RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*));
+
+	void RegisterCallback(EMessageType eMessageType, void* pfnCallback);//(*pfnCallback)(IMessage*));
 	void RemoveCallback(EMessageType eMessageType);
 	void OnMessageReceived(char pBuffer[]);// Called in OnReceive()
 

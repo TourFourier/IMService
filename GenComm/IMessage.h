@@ -1,5 +1,5 @@
 #pragma once
-
+#include "constants.h"
 
 class  IMessage
 {
@@ -7,6 +7,7 @@ protected:
 	int m_guid; // Simple implementation uses int instead of GUID
 	int m_nMessageType;// define the EMessageType in the implementations and 
 	//upon receipt of buffer, typecast this member into an EMessageType to get message type as enum(see from buffer definition)
+
 
 public:
 	IMessage(int guid, EMessageType messageType);

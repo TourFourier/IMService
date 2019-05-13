@@ -413,7 +413,7 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	m_wndOutput.UpdateFonts();
 }
 
-	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
+//	CCommunication_Client* pCC = CCommunication_Client::GetInstance();
 	static int textCount = 0;
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
@@ -446,11 +446,11 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 			text.m_userDestination.sPhoneNumber = (L" 058 ");
 			text.m_groupDestination.guid = 12;
 			//AfxMessageBox(L"about to send text");
-			pCC->SendTextMessage(text);
+			CCommunication_Client::GetInstance()->SendTextMessage(text);
 
 			Sleep(5000);
 
-		pCC->Tick();
+			CCommunication_Client::GetInstance()->Tick();
 		//AfxMessageBox(L"called tick");
 	
 	CFrameWndEx::OnTimer(nIDEvent);

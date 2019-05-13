@@ -1,5 +1,6 @@
 #pragma once
 #include "../GenComm/CMefathimSocket.h"
+#include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "../GenComm/CSafeMessageQueue.h"
 #include "../IMComm/structsAndConstants.h"
 
@@ -7,7 +8,7 @@
 class CCommunication_Client :
 	public  CMefathimSocket
 {
-
+	int n = -1;
 private:
 	static CCommunication_Client* s_pCCommunicationClient; // SINGLETON; 
 
@@ -16,15 +17,15 @@ private:
 	CSafeMessageQueue m_queueGroupCreateUpdateMessages;
 	CSafeMessageQueue m_queueAcknowledge;
 
-	CCommunication_Client(/*CString sConnectionDetails*/);
+	CCommunication_Client(CMessageFactory_WhatsApp* p);
 public:
 	~CCommunication_Client();
 	static CCommunication_Client* GetInstance()  // SINGLETON              
 	{
 		if (s_pCCommunicationClient == NULL)
 		{
-	
-		s_pCCommunicationClient = new CCommunication_Client;
+			CMessageFactory_WhatsApp* p_MessageFac = new CMessageFactory_WhatsApp();
+			s_pCCommunicationClient = new CCommunication_Client(p_MessageFac);
 		}
 		return s_pCCommunicationClient;
 	}

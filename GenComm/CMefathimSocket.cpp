@@ -28,9 +28,11 @@ CMefathimSocket::~CMefathimSocket()
 }
 
 
-void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*))
+void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void* pfnCallback)// (*pfnCallback)(IMessage*))
 {
-	m_hashCallbacks.insert(std::pair<EMessageType, void(*)(IMessage*)>(eMessageType, pfnCallback));
+	//m_hashCallbacks.insert({ eMessageType, pfnCallback });
+	m_hashCallbacks[eMessageType] = pfnCallback;
+	//m_hashCallbacks.insert(std::pair<EMessageType, void*>/*(*)(IMessage*)>*/(eMessageType, pfnCallback));
 }
 
 void CMefathimSocket::RemoveCallback(EMessageType eMessageType)

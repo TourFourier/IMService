@@ -159,6 +159,7 @@ BOOL CIMClientApp::InitInstance()
 
 		return TRUE;
 	}
+	return TRUE;
 }
 
 int CIMClientApp::ExitInstance()

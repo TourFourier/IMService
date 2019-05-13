@@ -20,8 +20,9 @@
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
 // Hard coded cient number but should be dynamic
-CCommunication_Client::CCommunication_Client() : CMefathimSocket(new CMessageFactory_WhatsApp, "Client")// +std::to_string(++SOCKET_NUMBER))
+CCommunication_Client::CCommunication_Client(CMessageFactory_WhatsApp* p) : CMefathimSocket(p, "Client")// +std::to_string(++SOCKET_NUMBER))
 {
+	n = 2;
 	Register();
 }
 
@@ -46,7 +47,10 @@ void CCommunication_Client::OnAcknowledgeReceived( IMessage* pMessage)
 	CCommunication_Client::GetInstance()->m_queueAcknowledge.Push((MAcknowledgeMessage*)pMessage);
 }*/
 
-
+/*void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void* pfnCallback)
+{
+	m_hashCallbacks.insert(std::pair<EMessageType, void*>(eMessageType, pfnCallback));
+}*/
 
 /*std::map<EMessageType, void*> m_hashCallbacks;
 void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void(*pfnCallback)(IMessage*))
@@ -55,19 +59,18 @@ void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void(*pfnCallb
 }*/
 void CCommunication_Client::Register()
 {
-	void(*fptr)(IMessage*) = this->OnTextMessageReceived;
+	//void(*fptr)(IMessage*) = this->OnTextMessageReceived;
 	//since RegisterCallback is an inherited method, using "this->" makes it clear that this method exists in this object(even though it is technically unnecessary)
-	RegisterCallback(TEXT_MESSAGE, fptr);// &(this->OnTextMessageReceived));
+	this->RegisterCallback(TEXT_MESSAGE, OnTextMessageReceived);// &(this->OnTextMessageReceived));
 	//this->RegisterCallback(EMessageType::CREATE_UPDATE_GROUP, CCommunication_Client::GetInstance()->OnGroupCreateUpdateReceived);
 	//this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
 }
 
-// IMPLEMENTATION INC CREATING A TEXT MSSG OBJ(using factory) AND CALLING TObUFFER AND THEN SENDMESSAGE()
 void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
 {	
 	//Create a message object to fill and call its ToBuffer() method
 	MTextMessage* pMTextmessage = new MTextMessage(613,text);
-	// Buffer to hold message details which are being sent 
+	// Buffer to hold message object details which are being sent 
 	char* cBuffer = new char[pMTextmessage->Size()];
 	// Filling the Buffer with the message objects details
 	pMTextmessage->ToBuffer(cBuffer);
