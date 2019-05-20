@@ -8,17 +8,32 @@
 class CCommunication_Client :
 	public  CMefathimSocket
 {
-	int n = -1;
 private:
 	static CCommunication_Client* s_pCCommunicationClient; // SINGLETON; 
+	char a = 'a';
+	char c = 'c';
+	char* b = new char('b');
+	int v = 100;
+	int w = 200;
+	enum ENUM{A,B,C};
+	//void (*fptr)()=HandleIncomingMessages;
+	std::map<ENUM, int(*)()/*void(*)()*/> testmap;
+
 
 	// Creating queues of objects (text message, acknowledge and group) for INCOMING messages
 	CSafeMessageQueue m_queueTextMessages;
 	CSafeMessageQueue m_queueGroupCreateUpdateMessages;
 	CSafeMessageQueue m_queueAcknowledge;
+	int(*fptr)() = add;
 
 	CCommunication_Client(CMessageFactory_WhatsApp* p);
 public:
+	static int add()
+	{
+		::AfxMessageBox(L"called add");
+		Sleep(5000);
+		return 0;
+	}
 	~CCommunication_Client();
 	static CCommunication_Client* GetInstance()  // SINGLETON              
 	{
@@ -52,7 +67,7 @@ public:
 	void SendGroupCreateUpdate(const TGroup& group); // argument: struct (2)
 	void SendAck(const TTextMessage& textMessageToAck); // argument: struct (3)
 
-	void HandleIncomingMessages(); 
+	void HandleIncomingMessages();
 	void Tick();
 };
 

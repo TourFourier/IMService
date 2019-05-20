@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "afxsock.h"
+#include<iostream>
 #include <rpc.h>
 #include <atlstr.h>
 #include <string>
 #include "../GenComm/constants.h"
 #include "../GenComm/IMessageFactory.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
-#include "../GenComm/CMefathimSocket.h"
 #include "../IMComm/structsAndConstants.h"
+#include "../GenComm/CMefathimSocket.h"
 #include "../GenComm/IMessage.h"
 #include "../IMComm/MTextMessage.h"
 #include "../IMComm/MGroupCreateUpdate.h"
@@ -22,8 +23,16 @@ CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 // Hard coded cient number but should be dynamic
 CCommunication_Client::CCommunication_Client(CMessageFactory_WhatsApp* p) : CMefathimSocket(p, "Client")// +std::to_string(++SOCKET_NUMBER))
 {
-	n = 2;
+	//CSafeMessageQueue&(*qptr)() = GetTextMessagesQueue;
+	//void(CCommunication_Client::*fptr)() = HandleIncomingMessages;
+
+
+	testmap[A] = fptr;
 	Register();
+	//fptr();
+
+	int(*func)() = testmap[A];
+	func();
 }
 
 CCommunication_Client::~CCommunication_Client()
@@ -61,7 +70,7 @@ void CCommunication_Client::Register()
 {
 	//void(*fptr)(IMessage*) = this->OnTextMessageReceived;
 	//since RegisterCallback is an inherited method, using "this->" makes it clear that this method exists in this object(even though it is technically unnecessary)
-	this->RegisterCallback(TEXT_MESSAGE, OnTextMessageReceived);// &(this->OnTextMessageReceived));
+	//this->RegisterCallback(test1, test2);// &(this->OnTextMessageReceived));
 	//this->RegisterCallback(EMessageType::CREATE_UPDATE_GROUP, CCommunication_Client::GetInstance()->OnGroupCreateUpdateReceived);
 	//this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
 }
@@ -76,7 +85,7 @@ void CCommunication_Client::SendTextMessage(const TTextMessage& text)
 	pMTextmessage->ToBuffer(cBuffer);
 	//Sending the Buffer to server
 	this->Send(cBuffer, pMTextmessage->Size());
-};
+}
 
 
 void CCommunication_Client::HandleIncomingMessages()
@@ -97,6 +106,8 @@ void CCommunication_Client::HandleIncomingMessages()
 			//OnTextMessageReceived((dynamic_cast<MTextMessage*>pMessageToHandle)->GetTextMessage()));
 	}
 }
+
+
 
 // Tick function for main to call
 void CCommunication_Client::Tick()

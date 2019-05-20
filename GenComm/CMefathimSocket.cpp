@@ -28,14 +28,14 @@ CMefathimSocket::~CMefathimSocket()
 }
 
 
-void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void* pfnCallback)// (*pfnCallback)(IMessage*))
+void CMefathimSocket::RegisterCallback(int eMessageType, int pfnCallback)// (*pfnCallback)(IMessage*))
 {
 	//m_hashCallbacks.insert({ eMessageType, pfnCallback });
 	m_hashCallbacks[eMessageType] = pfnCallback;
 	//m_hashCallbacks.insert(std::pair<EMessageType, void*>/*(*)(IMessage*)>*/(eMessageType, pfnCallback));
 }
 
-void CMefathimSocket::RemoveCallback(EMessageType eMessageType)
+void CMefathimSocket::RemoveCallback(int eMessageType)
 {
 	m_hashCallbacks.erase(eMessageType);
 }
@@ -122,8 +122,8 @@ void CMefathimSocket::OnMessageReceived(char pBuffer[])
 	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
 	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
 	// 2. Call callback
-	void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
-	((void(*)(IMessage*))callbacks)(pMessage);
+	//void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
+	//((void(*)(IMessage*))callbacks)(pMessage);
 }
 	
 

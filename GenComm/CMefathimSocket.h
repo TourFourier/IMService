@@ -19,7 +19,7 @@ class CMefathimSocket : public CAsyncSocket
 	std::string m_sSocketName;
 protected:
 	IMessageFactory* m_pMessageFactory;// This is to create a message of specific type upon receipt of buffer
-	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
+	std::map<int, int> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
 	// In this implementation we are going to simply push the mssg object into a queue
 	// TODO: Change value to vector/list of function pointers
 public:
@@ -27,8 +27,8 @@ public:
 	~CMefathimSocket();
 
 
-	void RegisterCallback(EMessageType eMessageType, void* pfnCallback);//(*pfnCallback)(IMessage*));
-	void RemoveCallback(EMessageType eMessageType);
+	void RegisterCallback(int eMessageType, int pfnCallback);//(*pfnCallback)(IMessage*));
+	void RemoveCallback(int eMessageType);
 	void OnMessageReceived(char pBuffer[]);// Called in OnReceive()
 
 	virtual void OnConnect(int nErrorCode);
