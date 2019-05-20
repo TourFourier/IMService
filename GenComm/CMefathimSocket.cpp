@@ -12,8 +12,7 @@
 #include <iostream>
 #include "CMefathimSocket.h"
 
-//static const int BUFFER_LENGTH = 100;
-std::list <CMefathimSocket*> CMefathimSocket::m_listSocketsToClient;
+
 
 
 CMefathimSocket::CMefathimSocket(IMessageFactory* pMessageFactory, std::string sSocketName) :CAsyncSocket()
@@ -28,42 +27,10 @@ CMefathimSocket::~CMefathimSocket()
 }
 
 
-void CMefathimSocket::RegisterCallback(int eMessageType, int pfnCallback)// (*pfnCallback)(IMessage*))
-{
-	//m_hashCallbacks.insert({ eMessageType, pfnCallback });
-	m_hashCallbacks[eMessageType] = pfnCallback;
-	//m_hashCallbacks.insert(std::pair<EMessageType, void*>/*(*)(IMessage*)>*/(eMessageType, pfnCallback));
-}
-
-void CMefathimSocket::RemoveCallback(int eMessageType)
-{
-	m_hashCallbacks.erase(eMessageType);
-}
 
 
 
-// This function is called when the server receives a connection request (V):
-void CMefathimSocket::OnAccept(int nErrorCode)
-{
-		//::AfxMessageBox(L"received connection request");
-	// Create new socket for the connection to requesting client:
-	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory,m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
-	this->m_listSocketsToClient.push_back(pNewSocket);
-	CString sName(pNewSocket->m_sSocketName.c_str());
-	::AfxMessageBox(sName + L" is added to the server socket list");
-	// Accept client request by binding new socket to the clients ip and port
-	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
 
-	// Error handling; return value is non zero if the function was succesful
-	if (bAccepted)
-	{
-		return;
-	}
-	else
-	{
-		throw GetLastError();
-	}
-}
 
 // This function is called when the client is connected (V):
 void CMefathimSocket::OnConnect(int nErrorCode)
@@ -73,58 +40,8 @@ void CMefathimSocket::OnConnect(int nErrorCode)
 		
 }
 
-//Called by the framework to notify this socket that there is data in 
-//the buffer that can be retrieved by calling the Receive() member function.
-void CMefathimSocket::OnReceive(int nErrorCode)
-{
-		//CString Ca(this->m_sSocketName.c_str());
-		//AfxMessageBox(Ca);
-		//::AfxMessageBox(L"text message received by " + Ca);
-
-	// Create a buffer to received the message:
-	const int RECEIVE_BUFFER_SIZE = 300;
-	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
-	// Receive the message:
-	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
-	// - If error code returned, do not continue:
-	if (nNumBytesReceived == SOCKET_ERROR || nNumBytesReceived == 0)
-	{
-		return;
-	}
-
-	// If recipient is a client: call onMessageReceived() to get the message object and call its callback
-	if (this->m_sSocketName == "Client")
-	{
-		OnMessageReceived(arrBuffer);
-	}
-	// If recipient is the Server: receive buffer, accesses all sockets except receiving socket and sends buffer out to all other clients
-	else
-	{
-		for (auto it : m_listSocketsToClient)
-		{
-			if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
-			{
-				it->Send(arrBuffer, RECEIVE_BUFFER_SIZE);
-			}
-		}
-	}	
-}
 
 
-void CMefathimSocket::OnMessageReceived(char pBuffer[])
-{
-	// Get message type from buffer (notice that in all messsages, first two
-	// members are the GUID (in this implementation its an int and SIZE_GUID=sizeof(int)) and then type (see IMessage class) 
-	//ie. this will move pointer over to point at type variable in buffer array. 
-	//This explains the folowing line:
-	EMessageType type = *(EMessageType*)(pBuffer + SIZE_GUID);//move pointer over till reach type;cast to pointer to enum;get content of pointer
-	// 1. Create Message object by the type.
-	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
-	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
-	// 2. Call callback
-	//void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
-	//((void(*)(IMessage*))callbacks)(pMessage);
-}
 	
 
 

@@ -20,6 +20,8 @@ private:
 	std::map<ENUM, int(*)()/*void(*)()*/> testmap;
 
 
+	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
+
 	// Creating queues of objects (text message, acknowledge and group) for INCOMING messages
 	CSafeMessageQueue m_queueTextMessages;
 	CSafeMessageQueue m_queueGroupCreateUpdateMessages;
@@ -52,6 +54,11 @@ public:
 	static void OnTextMessageReceived(IMessage* pMessage);
 	static void OnGroupCreateUpdateReceived(IMessage* pMessage);
 	static void OnAcknowledgeReceived(IMessage* pMessage);
+
+	void RegisterCallback(EMessageType eMessageType, void* pfnCallback);// (*pfnCallback)(IMessage*))
+	void RemoveCallback(EMessageType eMessageType);
+	void OnMessageReceived(char pBuffer[]);
+	void OnReceive(int nErrorCode);
 
 
 

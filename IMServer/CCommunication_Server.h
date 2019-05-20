@@ -1,12 +1,36 @@
 #pragma once
 
 
- class CCommunication_Server :
-	public CMefathimSocket
-{
+ class CCommunication_Server 
+	 : public CAsyncSocket
+ {
 private:
+
 	CCommunication_Server();
 	static CCommunication_Server* s_pCommunicationServer; //SINGLETON
+	std::string m_sSocketName = "Server";
+
+
+	class CServerSocket : public CAsyncSocket
+	{
+	public:
+		CServerSocket(std::string name) :m_sSocketName(name)
+		{}
+
+		std::string m_sSocketName;
+
+		void OnReceive(int nErrorCode);
+	};
+
+
+	// For server side usage only:
+	static std::list<CServerSocket*> m_listSocketsToClient;
+	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
+
+
+
+
+
 
 public:
 	~CCommunication_Server();
@@ -33,6 +57,12 @@ public:
 		}
 		return s_pCommunicationServer;
 	}
+
+	void RegisterCallback(EMessageType eMessageType, void* pfnCallback);// (*pfnCallback)(IMessage*))
+	void RemoveCallback(EMessageType eMessageType);
+	//void OnMessageReceived(char pBuffer[]);
+	void OnAccept(int nErrorCode);
+
 
 
 
