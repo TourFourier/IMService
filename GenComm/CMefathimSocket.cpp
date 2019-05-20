@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include <afxsock.h>
-#include "../IMComm/MTextMessage.h"
-#include "../IMComm/structsAndConstants.h"
-#include "IMessageFactory.h"
-#include "IMessage.h"
-#include "constants.h"
 #include <atlstr.h>
 #include <map>
 #include <list>
 #include <string>
 #include <iostream>
+#include "constants.h"
+#include "../IMComm/structsAndConstants.h"
+#include "IMessage.h"
+#include "IMessageFactory.h"
+#include "../IMComm/MTextMessage.h"
 #include "CMefathimSocket.h"
 
 //static const int BUFFER_LENGTH = 100;
@@ -30,10 +30,10 @@ CMefathimSocket::~CMefathimSocket()
 
 void CMefathimSocket::RegisterCallback(EMessageType eMessageType, void* pfnCallback)// (*pfnCallback)(IMessage*))
 {
-	//m_hashCallbacks.insert({ eMessageType, pfnCallback });
 	m_hashCallbacks[eMessageType] = pfnCallback;
 	//m_hashCallbacks.insert(std::pair<EMessageType, void*>/*(*)(IMessage*)>*/(eMessageType, pfnCallback));
 }
+
 
 void CMefathimSocket::RemoveCallback(EMessageType eMessageType)
 {
@@ -122,8 +122,8 @@ void CMefathimSocket::OnMessageReceived(char pBuffer[])
 	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
 	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
 	// 2. Call callback
-	void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
-	((void(*)(IMessage*))callbacks)(pMessage);
+	//void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
+	//((void(*)(IMessage*))callbacks)(pMessage);
 }
 	
 

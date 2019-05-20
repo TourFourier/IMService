@@ -34,10 +34,11 @@ public:
 		return s_pCommunicationServer;
 	}
 
+	void OnReceive(int nErrorCode);
 
 
 	void SendTextMessage(TTextMessage text);
 	
-	void OnReceiveTextMessage();
+	//void OnReceiveTextMessage();
 };
 

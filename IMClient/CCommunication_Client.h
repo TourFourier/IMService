@@ -1,14 +1,13 @@
 #pragma once
-#include "../GenComm/CMefathimSocket.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "../GenComm/CSafeMessageQueue.h"
 #include "../IMComm/structsAndConstants.h"
+#include "../GenComm/CMefathimSocket.h"
 
 
 class CCommunication_Client :
 	public  CMefathimSocket
 {
-	int n = -1;
 private:
 	static CCommunication_Client* s_pCCommunicationClient; // SINGLETON; 
 
@@ -32,6 +31,11 @@ public:
 
 	// This method fills a hash tablewith message type and corresponding callback function and is called in CComm's constructor  
 	void Register();
+
+	//void OnReceive(int nErrorCode);
+	//void OnMessageReceived(char pBuffer[]);
+
+
 
 	// These are the callback functions ie. for when a new message or ack or group  occur
 	static void OnTextMessageReceived(IMessage* pMessage);

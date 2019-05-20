@@ -1,16 +1,17 @@
 #pragma once
 #include <map>
+#include <list>
 #include "../IMComm/structsAndConstants.h"
-
 #include "IMessageFactory.h"
 #include "IMessage.h"
+
+
 #ifdef DLL_IMPORT
 #define DLL __declspec(dllimport)
 #else
 #define DLL __declspec(dllexport)
 #endif
 
-#include <list>
 
 class CMefathimSocket : public CAsyncSocket
 {
@@ -32,7 +33,7 @@ public:
 	void OnMessageReceived(char pBuffer[]);// Called in OnReceive()
 
 	virtual void OnConnect(int nErrorCode);
-	virtual void OnAccept(int nErrorCode);
-	virtual void OnReceive(int nErrorCode);
+	virtual void OnAccept(int nErrorCode)=0;
+	virtual void OnReceive(int nErrorCode)=0;
 	virtual void OnClose(int nErrorCode);
 };

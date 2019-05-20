@@ -1,4 +1,6 @@
 #pragma once
+#include "../GenComm/IMessageFactory.h"
+
 class CMessageFactory_WhatsApp :
 	public IMessageFactory
 {

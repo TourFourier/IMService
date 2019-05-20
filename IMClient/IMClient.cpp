@@ -7,12 +7,9 @@
 #include "afxdialogex.h"
 #include <string>
 #include <afxsock.h>
-#include "../GenComm/constants.h"
 #include "CCommunication_Client.h"
 #include "IMClient.h"
 #include "MainFrm.h"
-#include "../GenComm/CMefathimsocket.h"
-#include "../IMComm/CMessageFactory_Whatsapp.h"
 #include "IMClientDoc.h"
 #include "IMClientView.h"
 
@@ -150,11 +147,10 @@ BOOL CIMClientApp::InitInstance()
 	BOOL bAfxSocketInitiated = ::AfxSocketInit();
 	if (bAfxSocketInitiated == TRUE)
 	{
-		CCommunication_Client*  p_CC = CCommunication_Client::GetInstance();
-		BOOL bCreated = p_CC->Create();
+		BOOL bCreated = CCommunication_Client::GetInstance()->Create();
 		if (bCreated)
 		{
-			BOOL bConncted = p_CC->Connect(L"127.0.0.1", 100);
+			BOOL bConncted = CCommunication_Client::GetInstance()->Connect(L"127.0.0.1", 100);
 		}
 
 		return TRUE;

@@ -8,6 +8,18 @@
 #include "Windows.h"
 #include "winuser.h"
 #include <string>
+#include <rpc.h>
+#include <atlstr.h>
+#include <string>
+#include "../GenComm/constants.h"
+#include "../GenComm/IMessage.h"
+#include "../GenComm/IMessageFactory.h"
+#include "../IMComm/CMessageFactory_WhatsApp.h"
+#include "../IMComm/structsAndConstants.h"
+#include "../IMComm/MTextMessage.h"
+#include "../IMComm/MGroupCreateUpdate.h"
+#include "../IMComm/MAcknowledgeMessage.h"
+#include "../GenComm/CMefathimSocket.h"
 #include "CCommunication_Client.h"
 
 #include "MainFrm.h"

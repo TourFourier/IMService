@@ -51,3 +51,52 @@ void CCommunication_Server::SendTextMessage(TTextMessage text) // sends to other
 {
 	CTextMessageManager::GetInstance()->PublishTextMessage(text);
 }
+
+void CCommunication_Server::OnReceive(int nErrorCode)
+{
+	//CString Ca(this->m_sSocketName.c_str());
+	//AfxMessageBox(Ca);
+	//::AfxMessageBox(L"text message received by " + Ca);
+
+// Create a buffer to received the message:
+	const int RECEIVE_BUFFER_SIZE = 300;
+	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
+	// Receive the message:
+	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
+	// - If error code returned, do not continue:
+	if (nNumBytesReceived == SOCKET_ERROR || nNumBytesReceived == 0)
+	{
+		return;
+	}
+
+	
+		for (auto it : m_listSocketsToClient)
+		{
+			if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
+			{
+				it->Send(arrBuffer, RECEIVE_BUFFER_SIZE);
+			}
+		}
+}
+
+void CMefathimSocket::OnAccept(int nErrorCode)
+{
+	//::AfxMessageBox(L"received connection request");
+// Create new socket for the connection to requesting client:
+	CMefathimSocket* pNewSocket = new CMefathimSocket(m_pMessageFactory, m_sSocketName + " Socket " + std::to_string(++SOCKET_NUMBER));
+	this->m_listSocketsToClient.push_back(pNewSocket);
+	CString sName(pNewSocket->m_sSocketName.c_str());
+	::AfxMessageBox(sName + L" is added to the server socket list");
+	// Accept client request by binding new socket to the clients ip and port
+	BOOL bAccepted = CAsyncSocket::Accept(*pNewSocket);
+
+	// Error handling; return value is non zero if the function was succesful
+	if (bAccepted)
+	{
+		return;
+	}
+	else
+	{
+		throw GetLastError();
+	}
+}

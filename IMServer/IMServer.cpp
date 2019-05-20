@@ -151,11 +151,10 @@ BOOL CIMServerApp::InitInstance()
 	BOOL bInitiated = ::AfxSocketInit();
 	if (bInitiated)
 	{
-		CCommunication_Server* p_CS = CCommunication_Server::GetInstance();
-		BOOL bCreated = p_CS->Create(100);
+		BOOL bCreated = CCommunication_Server::GetInstance()->Create(100);
 		if (bCreated)
 		{
-			BOOL bListening = p_CS->Listen();
+			BOOL bListening = CCommunication_Server::GetInstance()->Listen();
 		}
 	}
 
