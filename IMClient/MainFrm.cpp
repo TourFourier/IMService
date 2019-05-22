@@ -435,7 +435,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 
 		}
 		//AfxMessageBox(L"about to call tick");*/
-			++textCount;
+		/*	++textCount;
 
 			auto s = std::to_string(textCount);
 			CString Cs(s.c_str());
@@ -450,7 +450,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 
 			Sleep(5000);
 
-			CCommunication_Client::GetInstance()->Tick();
+			CCommunication_Client::GetInstance()->Tick();*/
 		//AfxMessageBox(L"called tick");
 	
 	CFrameWndEx::OnTimer(nIDEvent);

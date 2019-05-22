@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CMefathimSocket.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="csafemessagequeue.h" />
     <ClInclude Include="IMessage.h" />
@@ -156,7 +155,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CMefathimSocket.cpp" />
     <ClCompile Include="CSafeMessageQueue.cpp" />
     <ClCompile Include="IMessage.cpp" />
     <ClCompile Include="IMessageFactory.cpp" />

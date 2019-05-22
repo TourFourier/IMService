@@ -5,7 +5,6 @@
 #include "MGroupCreateUpdate.h"
 #include "MAcknowledgeMessage.h"
 #include "MTextMessage.h"
-
 #include "CMessageFactory_WhatsApp.h"
 
 

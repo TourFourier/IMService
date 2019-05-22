@@ -6,7 +6,6 @@
 #include "../GenComm/constants.h"
 #include "../GenComm/IMessageFactory.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
-#include "../GenComm/CMefathimSocket.h"
 #include "../IMComm/structsAndConstants.h"
 #include "../GenComm/IMessage.h"
 #include "../IMComm/MTextMessage.h"
@@ -19,16 +18,19 @@
 //CCommunication_Client::CCommunication_Client(){}
 CCommunication_Client* CCommunication_Client::s_pCCommunicationClient = NULL;
 
+
 // Hard coded cient number but should be dynamic
-CCommunication_Client::CCommunication_Client(CMessageFactory_WhatsApp* p) : CMefathimSocket(p, "Client")// +std::to_string(++SOCKET_NUMBER))
+CCommunication_Client::CCommunication_Client()
 {
+	m_sSocketName = "CLIENT";
+	m_pMessageFactory = new CMessageFactory_WhatsApp();
 	Register();
 }
 
 CCommunication_Client::~CCommunication_Client()
 {
+	delete m_pMessageFactory;
 	this->Close();
-	delete s_pCCommunicationClient;
 }
 
 void CCommunication_Client::OnTextMessageReceived(IMessage* pMessage)
@@ -65,17 +67,6 @@ void CCommunication_Client::Register()
 	//this->RegisterCallback(EMessageType::ACKNOWLEDGE, CCommunication_Client::GetInstance()->OnAcknowledgeReceived);
 }
 
-void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
-{	
-	//Create a message object to fill and call its ToBuffer() method
-	MTextMessage* pMTextmessage = new MTextMessage(613,text);
-	// Buffer to hold message object details which are being sent 
-	char* cBuffer = new char[pMTextmessage->Size()];
-	// Filling the Buffer with the message objects details
-	pMTextmessage->ToBuffer(cBuffer);
-	//Sending the Buffer to server
-	this->Send(cBuffer, pMTextmessage->Size());
-};
 
 
 void CCommunication_Client::HandleIncomingMessages()
@@ -151,6 +142,37 @@ void CCommunication_Client::OnMessageReceived(char pBuffer[])
 	((void(*)(IMessage*))callbacks)(pMessage);
 }
 
+// This function is called when the client is connected (V):
+void CCommunication_Client::OnConnect(int nErrorCode)
+{
+	CString sName(this->m_sSocketName.c_str());
+	::AfxMessageBox(sName + L" is connected to the server");
+
+	Sleep(10000);
+
+	TTextMessage text;
+	text.m_sText = (L"test text");
+	text.m_userDestination.guid = 17;
+	text.m_userDestination.sName = (L"dave");
+	text.m_userDestination.sPhoneNumber = (L"058");
+	text.m_groupDestination.guid = 12;
+	//AfxMessageBox(L"about to send text");
+	SendTextMessage(text);
+
+}
+
+void CCommunication_Client::SendTextMessage(const TTextMessage& text) 
+{	
+	//Create a message object to fill and call its ToBuffer() method
+	MTextMessage* pMTextmessage = new MTextMessage(613,text);
+	// Buffer to hold message object details which are being sent 
+	char cBuffer[100];
+	// Filling the Buffer with the message objects details
+	pMTextmessage->ToBuffer(cBuffer);
+	//Sending the Buffer to server
+	this->Send(cBuffer, 100);
+};
+
 //Called by the framework to notify this socket that there is data in 
 //the buffer that can be retrieved by calling the Receive() member function.
 void CCommunication_Client::OnReceive(int nErrorCode)
@@ -172,4 +194,9 @@ void CCommunication_Client::OnReceive(int nErrorCode)
 
 	// Call onMessageReceived() to get the message object and call its callbac
 	OnMessageReceived(arrBuffer);
+}
+
+void CCommunication_Client::OnClose(int nErrorCode)
+{
+	AfxMessageBox(L"Wow - connection closed...");
 }

@@ -5,7 +5,6 @@
 #include "../GenComm/constants.h"
 #include "../GenComm/IMessageFactory.h"
 #include "../IMComm/CMessageFactory_WhatsApp.h"
-#include "../GenComm/CMefathimSocket.h"
 #include "../IMComm/structsAndConstants.h"
 #include "../GenComm/IMessage.h"
 #include "../IMComm/MTextMessage.h"
@@ -14,11 +13,12 @@
 #include "CTextMessageManager.h"
 #include "CCommunication_Server.h"
 
-class CServerSocket
+class CServerSocket;
 
 CCommunication_Server* CCommunication_Server::s_pCommunicationServer = NULL;
 
 std::list <CCommunication_Server::CServerSocket*> CCommunication_Server::m_listSocketsToClient;
+
 
 CCommunication_Server::CCommunication_Server()
 {
@@ -29,13 +29,14 @@ CCommunication_Server::CCommunication_Server()
 CCommunication_Server::~CCommunication_Server()
 {
 	this->Close();
-	for (std::list<CServerSocket*>::iterator itr = m_listSocketsToClient.begin; itr != m_listSocketsToClient.end; itr++)
+	for (std::list<CServerSocket*>::iterator itr = m_listSocketsToClient.begin(); itr != m_listSocketsToClient.end(); itr++)
 	{
 		delete *itr;
 		*itr = nullptr;
 	}
 }
 
+//This method would be called in the on received method. after extracting the text struct (which also contains destination), we would call this callback
 void CCommunication_Server::OnTextMessageReceived(TTextMessage message)
 {
 	CTextMessageManager::GetInstance()->PublishTextMessage(message);
@@ -132,12 +133,37 @@ void CCommunication_Server::CServerSocket::OnReceive(int nErrorCode)
 	{
 		return;
 	}
-
-	for (auto it : m_listSocketsToClient)
-	{
-		if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
-		{
-			it->Send(arrBuffer, RECEIVE_BUFFER_SIZE);
-		}
-	}
+	// When a message comes in the matching socket, in the list, receives it and runs over the list of
+	// all sockets and for each socket, other then itself, calls the inherited (from CAsyncSocket) Send()
+	//for (auto it : m_listSocketsToClient)
+	//{
+		//if ((it->m_sSocketName.compare(this->m_sSocketName)) != 0)
+		//{
+			/*it*/this->Send(arrBuffer, RECEIVE_BUFFER_SIZE);
+		//}
+	//}
 }
+
+
+
+void CCommunication_Server::OnClose(int nErrorCode)
+{
+	AfxMessageBox(L"Wow - connection closed...");
+	SOCKET_NUMBER--;
+}
+
+
+/*void CCommunication_Server::OnMessageReceived(char pBuffer[])
+{
+	// Get message type from buffer (notice that in all messsages, first two
+	// members are the GUID (in this implementation its an int and SIZE_GUID=sizeof(int)) and then type (see IMessage class) 
+	//ie. this will move pointer over to point at type variable in buffer array. 
+	//This explains the folowing line:
+	EMessageType type = *(EMessageType*)(pBuffer + SIZE_GUID);//move pointer over till reach type;cast to pointer to enum;get content of pointer
+	// 1. Create Message object by the type.
+	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
+	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
+	// 2. Call callback
+	void* callbacks = m_hashCallbacks[type]; // returns a pointer to a function
+	((void(*)(IMessage*))callbacks)(pMessage);
+}*/

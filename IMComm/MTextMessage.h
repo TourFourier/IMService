@@ -18,7 +18,7 @@ public:
 	// Returns absolute size of message object in bytes
 	virtual int Size();
 	// Logic for extracting from a buffer
-	virtual bool ToBuffer(char* cBuffer);
+	virtual bool ToBuffer(char cBuffer[]);
 	// Logic for creating a buffer
 	virtual bool FromBuffer(char* pBuffer);	
 };

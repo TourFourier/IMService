@@ -98,12 +98,34 @@ struct TUser
 		int nameLength = sName.GetLength() * 2;
 		int phoneNumberLength = sPhoneNumber.GetLength() * 2;
 
-		*(int*)pBuffer = guidLength;
-		*(int*)(pBuffer + SIZE_INT) = guid;
-		*(int*)(pBuffer + SIZE_INT + SIZE_GUID) = nameLength;
+		*((int*)pBuffer) = guidLength;
+		//int ea = *((int *)pBuffer);
+
+		*((int*)(pBuffer + SIZE_INT)) = guid;
+		//int eb = *((int *)(pBuffer + SIZE_INT));
+
+		*((int*)(pBuffer + SIZE_INT + SIZE_GUID)) = nameLength;
+		//int ec = *((int *)(pBuffer + SIZE_INT + SIZE_GUID));
+
 		memcpy((pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT), sName.GetBuffer(), nameLength);
-		*(int*)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength) = phoneNumberLength;
+		//wchar_t ed = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT));
+		//wchar_t ee = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + sizeof(wchar_t)));
+		//wchar_t ef = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t)));
+		//wchar_t eg = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		
+
+		*((int*)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength)) = phoneNumberLength;
+		//int el = *((int *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength));
+
 		memcpy((pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT), sPhoneNumber.GetBuffer(), phoneNumberLength);
+		/*wchar_t em = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT));
+		wchar_t en = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + sizeof(wchar_t)));
+		wchar_t eq = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) ));
+		wchar_t er = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) ));
+		wchar_t es = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t et = *((wchar_t *)(pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		*/
+		
 		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT + nameLength + SIZE_INT + phoneNumberLength);
 
 		return pBuffer;
@@ -113,24 +135,24 @@ struct TUser
 	{
 		int sizeOfNext;// the size of this variable itself is SIZE_INT
 
-		sizeOfNext = *(int*)pBuffer;
-		guid = *(int*)pBuffer + sizeOfNext;
-		sizeOfNext = *(int*)pBuffer + sizeOfNext + SIZE_GUID;
+		sizeOfNext = *((int*)pBuffer);
+		guid = *((int*)(pBuffer + sizeOfNext));
+		sizeOfNext = *((int*)(pBuffer + sizeOfNext + SIZE_GUID));
 		// sizeOfNext's value is probably no longer same size as an int therefor move pointer SIZE_INT instead of sizeOfNext
 		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID + SIZE_INT);
 		for (int i = 0; i < sizeOfNext; i++)
 		{
-			sName += *(CString*)(pBuffer + i);
+			sName += *((CString*)(pBuffer + i));
 		}
 		// Move pointer over to end of sName
 		pBuffer = (pBuffer + sizeOfNext);
 		// Get size of phone number
-		sizeOfNext = *(int*)pBuffer;
+		sizeOfNext = *((int*)pBuffer);
 		// Move pointer over to point at ohone number so loop can be kept simple
 		pBuffer = (pBuffer + SIZE_INT);
 		for (int i = 0; i < sizeOfNext; i++)
 		{
-			sPhoneNumber += *(CString*)(pBuffer + i);
+			sPhoneNumber += *((CString*)(pBuffer + i));
 		}
 		pBuffer = (pBuffer + sizeOfNext);
 
@@ -148,12 +170,15 @@ struct TGroup
 	char* ToBuffer(char* pBuffer)
 	{
 		//char* p_temp = pBuffer;
-		*(int*)pBuffer = guid;
+		*((int*)pBuffer) = guid;
+		//int ea = *((int*)pBuffer);
+
 		pBuffer = (pBuffer + SIZE_GUID);
 		for (auto it = nlistUsers.begin(); it != nlistUsers.end(); ++it)
 		{
 			pBuffer = (it->ToBuffer(pBuffer));
 		}
+
 		return pBuffer;
 	}
 
@@ -161,9 +186,9 @@ struct TGroup
 	{
 		int sizeOfNext;// the size of this variable itself is SIZE_INT
 
-		sizeOfNext = *(int*)pBuffer;
-		guid = *(int*)pBuffer + sizeOfNext;
-		pBuffer = pBuffer + SIZE_INT + SIZE_GUID;
+		sizeOfNext = *((int*)pBuffer);
+		guid = *((int*)(pBuffer + sizeOfNext));
+		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID);
 		// sizeOfNext's value is probably no longer same size as an int therefor move pointer SIZE_INT instead of sizeOfNext
 		for (auto it = nlistUsers.begin(); it != nlistUsers.end(); ++it)
 		{
@@ -189,11 +214,12 @@ struct TTextMessage
 		//pBuffer = StringToBuffer(pBuffer, m_sText);
 		
 		int textLength = m_sText.GetLength() * 2;
-		*(int*)pBuffer = textLength;
+		*((int*)pBuffer) = textLength;
+		//int ev = *((int *)(pBuffer + SIZE_GUID));
 		// Add text message(CString) to the buffer
 		memcpy((pBuffer + SIZE_INT), m_sText.GetBuffer(), textLength);
 		// Move buffer pointer over and pass on the buffer to TUser struct to deal with
-		pBuffer = pBuffer + SIZE_INT + textLength;
+		pBuffer = (pBuffer + SIZE_INT + textLength);
 		pBuffer = m_userDestination.ToBuffer(pBuffer);
 		pBuffer = m_groupDestination.ToBuffer(pBuffer);
 	}
@@ -202,12 +228,12 @@ struct TTextMessage
 	{
 		int sizeOfNext;// the size of this variable itself is SIZE_INT
 		
-		sizeOfNext = *(int*)pBuffer;
+		sizeOfNext = *((int*)pBuffer);
 		//m_sText = *(CString*)(pBuffer + sizeOfNext);
 		pBuffer = (pBuffer + SIZE_INT);
 		for (int i = 0; i < sizeOfNext; i++)
 		{
-			m_sText += *(CString*)(pBuffer + i);
+			m_sText += *((CString*)(pBuffer + i));
 		}
 		pBuffer = (pBuffer + sizeOfNext);
 		pBuffer = m_userDestination.FromBuffer(pBuffer);
@@ -225,3 +251,21 @@ enum EMessageType
 
 //int test1 = 401;
 //int test2 = 404;
+
+// convert int to CString
+/* auto a = std::to_string(cBuffer[i]);
+*	CString Ca(a.c_str());
+*	AfxMessageBox(Ca);
+*/
+
+/*int ea = *((int *)pBuffer);
+		wchar_t eb = *((wchar_t *)(pBuffer + SIZE_INT));
+		wchar_t ec = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t)));
+		wchar_t ed = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t ee = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t ef = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t eg = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t eh = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t ei = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t ej = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));
+		wchar_t ek = *((wchar_t *)(pBuffer + SIZE_INT + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t) + sizeof(wchar_t)));*/

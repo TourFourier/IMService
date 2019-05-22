@@ -1,23 +1,18 @@
 #pragma once
-#include "../GenComm/CMefathimSocket.h"
+#include<map>
 #include "../IMComm/CMessageFactory_WhatsApp.h"
 #include "../GenComm/CSafeMessageQueue.h"
 #include "../IMComm/structsAndConstants.h"
 
 
 class CCommunication_Client :
-	public  CMefathimSocket
+	public  CAsyncSocket
 {
 private:
 	static CCommunication_Client* s_pCCommunicationClient; // SINGLETON; 
-	char a = 'a';
-	char c = 'c';
-	char* b = new char('b');
-	int v = 100;
-	int w = 200;
-	enum ENUM{A,B,C};
+	std::string m_sSocketName;
+
 	//void (*fptr)()=HandleIncomingMessages;
-	std::map<ENUM, int(*)()/*void(*)()*/> testmap;
 
 
 	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
@@ -26,23 +21,17 @@ private:
 	CSafeMessageQueue m_queueTextMessages;
 	CSafeMessageQueue m_queueGroupCreateUpdateMessages;
 	CSafeMessageQueue m_queueAcknowledge;
-	int(*fptr)() = add;
+	// Initialized in the constructor
+	IMessageFactory* m_pMessageFactory;
 
-	CCommunication_Client(CMessageFactory_WhatsApp* p);
+	CCommunication_Client();
 public:
-	static int add()
-	{
-		::AfxMessageBox(L"called add");
-		Sleep(5000);
-		return 0;
-	}
 	~CCommunication_Client();
 	static CCommunication_Client* GetInstance()  // SINGLETON              
 	{
 		if (s_pCCommunicationClient == NULL)
 		{
-			CMessageFactory_WhatsApp* p_MessageFac = new CMessageFactory_WhatsApp();
-			s_pCCommunicationClient = new CCommunication_Client(p_MessageFac);
+			s_pCCommunicationClient = new CCommunication_Client();
 		}
 		return s_pCCommunicationClient;
 	}
@@ -57,8 +46,10 @@ public:
 
 	void RegisterCallback(EMessageType eMessageType, void* pfnCallback);// (*pfnCallback)(IMessage*))
 	void RemoveCallback(EMessageType eMessageType);
+	void OnConnect(int nErrorCode);
 	void OnMessageReceived(char pBuffer[]);
 	void OnReceive(int nErrorCode);
+	void OnClose(int nErrorCode);
 
 
 

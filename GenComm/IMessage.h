@@ -18,7 +18,7 @@ public:
 	const int GetGuid() { return m_guid; }
 	int GetType() { return m_nMessageType; }
 	virtual int Size() = 0;
-	virtual bool ToBuffer(char* cBuffer)=0;
+	virtual bool ToBuffer(char cBuffer[])=0;
 	virtual bool FromBuffer(char* pBuffer)=0;
 };
 

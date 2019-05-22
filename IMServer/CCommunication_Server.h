@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 
 
  class CCommunication_Server 
@@ -8,7 +9,7 @@ private:
 
 	CCommunication_Server();
 	static CCommunication_Server* s_pCommunicationServer; //SINGLETON
-	std::string m_sSocketName = "Server";
+	std::string m_sSocketName = "SERVER";
 
 
 	class CServerSocket : public CAsyncSocket
@@ -20,13 +21,14 @@ private:
 		std::string m_sSocketName;
 
 		void OnReceive(int nErrorCode);
+
 	};
 
 
 	// For server side usage only:
 	static std::list<CServerSocket*> m_listSocketsToClient;
 	std::map<EMessageType, void*> m_hashCallbacks;// Used to perform task(callback) related to specific mssg type
-
+	//IMessageFactory* m_pMessageFactory;
 
 
 
@@ -62,6 +64,7 @@ public:
 	void RemoveCallback(EMessageType eMessageType);
 	//void OnMessageReceived(char pBuffer[]);
 	void OnAccept(int nErrorCode);
+	void OnClose(int nErrorCode);
 
 
 
