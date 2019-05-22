@@ -46,6 +46,8 @@ bool MTextMessage::ToBuffer(char cBuffer[])
 	// 1) Fill  buffer with basic fields of the MTextMessage object
 	// Casting the buffer pointer to what it is pointing to ie. int, int, int
 	*((int*)cBuffer) = m_guid;
+	int ea = *((int*)cBuffer);
+
 	*((int*)(cBuffer + SIZE_GUID)) = static_cast<int>(TEXT_MESSAGE);
 	
 	// Moving buffer pointer over by the amount of bytes that were allocated values in the buffer
@@ -61,17 +63,17 @@ bool MTextMessage::ToBuffer(char cBuffer[])
 {
 	//char* sync = *(char*)pBuffer;
 	//int totalSize;
-	TTextMessage temp;
+	//TTextMessage temp;
 
-	m_guid = *(int*)pBuffer;
-	m_nMessageType = *(int*)(pBuffer + SIZE_GUID);
+	this->m_guid = *((int*)pBuffer);
+	this->m_nMessageType = *((int*)(pBuffer + SIZE_GUID));
 	//totalSize = *(int*)(pBuffer + SIZE_GUID + SIZE_INT);
 	//sizeWithoutMessage = (SIZE_GUID + SIZE_INT + SIZE_INT);
 	//sizeOfMessage = totalSize - sizeWithoutMessage;
-	temp.FromBuffer((pBuffer + SIZE_INT + SIZE_GUID));
-	
+	//temp.FromBuffer((pBuffer + SIZE_INT + SIZE_GUID));
+	pBuffer = (pBuffer + SIZE_INT + SIZE_GUID);
 
-	m_msgText = temp;
+	this->m_msgText.FromBuffer(pBuffer);
 	// Note: the size of the text struct will differ depends on the text message and recipients...
 	//...therefor must adjust to read that much of buffer or have a sync word/#       
 	

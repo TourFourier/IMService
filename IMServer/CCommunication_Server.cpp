@@ -124,7 +124,7 @@ void CCommunication_Server::CServerSocket::OnReceive(int nErrorCode)
 	//::AfxMessageBox(L"text message received by " + Ca);
 
 // Create a buffer to received the message:
-	const int RECEIVE_BUFFER_SIZE = 300;
+	const int RECEIVE_BUFFER_SIZE = 100;
 	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
 	// Receive the message:
 	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);

@@ -169,11 +169,12 @@ struct TGroup
 	std::vector<TUser> nlistUsers;
 	char* ToBuffer(char* pBuffer)
 	{
-		//char* p_temp = pBuffer;
-		*((int*)pBuffer) = guid;
+		int guidLength = sizeof(guid);
+		*((int*)pBuffer) = guidLength;
+		*((int*)(pBuffer + SIZE_INT)) = guid;
 		//int ea = *((int*)pBuffer);
 
-		pBuffer = (pBuffer + SIZE_GUID);
+		pBuffer = (pBuffer + SIZE_INT + SIZE_GUID);
 		for (auto it = nlistUsers.begin(); it != nlistUsers.end(); ++it)
 		{
 			pBuffer = (it->ToBuffer(pBuffer));
@@ -227,15 +228,28 @@ struct TTextMessage
 	void FromBuffer(char* pBuffer)
 	{
 		int sizeOfNext;// the size of this variable itself is SIZE_INT
-		
 		sizeOfNext = *((int*)pBuffer);
-		//m_sText = *(CString*)(pBuffer + sizeOfNext);
+		
+		wchar_t* temp = new wchar_t[sizeOfNext/2];
+		//auto c = m_sText.GetBuffer(); //*(CString*)(pBuffer + sizeOfNext);
 		pBuffer = (pBuffer + SIZE_INT);
-		for (int i = 0; i < sizeOfNext; i++)
+		for (int i = 0; i < sizeOfNext/2; i++)
 		{
-			m_sText += *((CString*)(pBuffer + i));
+			temp[i] = *((wchar_t*)(pBuffer + i));
 		}
-		pBuffer = (pBuffer + sizeOfNext);
+
+		// Allocate an internal buffer for CString, 
+		// and get write access to it.
+		const int bufferSize = (sizeOfNext/2); // in wchar_ts!
+		wchar_t* buffer = m_sText.GetBuffer(bufferSize);
+		// Scribble in the CString's internal buffer.
+		wcscpy_s(buffer, bufferSize, temp);
+
+		delete temp;
+		m_sText.ReleaseBuffer();
+		// Avoid dangling references.
+		buffer = nullptr;
+		pBuffer = (pBuffer + SIZE_INT + sizeOfNext);
 		pBuffer = m_userDestination.FromBuffer(pBuffer);
 		m_groupDestination.FromBuffer(pBuffer);
 	}

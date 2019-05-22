@@ -133,7 +133,7 @@ void CCommunication_Client::OnMessageReceived(char pBuffer[])
 	// members are the GUID (in this implementation its an int and SIZE_GUID=sizeof(int)) and then type (see IMessage class) 
 	//ie. this will move pointer over to point at type variable in buffer array. 
 	//This explains the folowing line:
-	EMessageType type = *(EMessageType*)(pBuffer + SIZE_GUID);//move pointer over till reach type;cast to pointer to enum;get content of pointer
+	EMessageType type = *((EMessageType*)(pBuffer + SIZE_GUID));//move pointer over till reach type;cast to pointer to enum;get content of pointer
 	// 1. Create Message object by the type.
 	IMessage* pMessage = m_pMessageFactory->CreateMessage(type); // 'pMessage' : Message obj
 	pMessage->FromBuffer(pBuffer);// Calling mssg obj.'s FromBuffer method which Fills the message obj.'s fields 
@@ -182,7 +182,7 @@ void CCommunication_Client::OnReceive(int nErrorCode)
 	//::AfxMessageBox(L"text message received by " + Ca);
 
 // Create a buffer to received the message:
-	const int RECEIVE_BUFFER_SIZE = 300;
+	const int RECEIVE_BUFFER_SIZE = 100;
 	char arrBuffer[RECEIVE_BUFFER_SIZE] = { 0 };
 	// Receive the message:
 	int nNumBytesReceived = CAsyncSocket::Receive(arrBuffer, RECEIVE_BUFFER_SIZE);
